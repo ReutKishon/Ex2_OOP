@@ -149,4 +149,40 @@ public class DWGraph_DS implements directed_weighted_graph {
     public int getMC() {
         return modifyCount;
     }
+
+
+
+
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass())
+            return false;
+        directed_weighted_graph anotherGraph = (directed_weighted_graph) obj;
+
+        if (this.nodeSize() != anotherGraph.nodeSize() || this.edgesSize != anotherGraph.edgeSize()) {
+            return false;
+        }
+
+        for (node_data n : this.getV()) {
+
+            // if anotherGraph does not contain n
+            if (anotherGraph.getNode(n.getKey()) == null) {
+
+                return false;
+            }
+
+            for (edge_data edge : this.getE(n.getKey())) {
+
+                if (anotherGraph.getNode(edge.getDest()) == null) return false;
+
+                //if anotherGraph does not contain the edge {n,dest}
+                if (anotherGraph.getEdge(n.getKey(), edge.getDest())== null) {
+                    return false;
+                }
+            }
+
+
+        }
+
+        return true;
+    }
 }

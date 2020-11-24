@@ -16,6 +16,14 @@ public class Node implements node_data {
         tag = 0;
     }
 
+    public Node(int key, int tag, geo_location location, double weight, String info) {
+        this.key = key;
+        this.tag = tag;
+        this.geoLocation = location;
+        this.weight = weight;
+        this.info = info;
+    }
+
     @Override
     public int getKey() {
         return key;
