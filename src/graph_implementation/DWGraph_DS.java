@@ -1,11 +1,6 @@
 package graph_implementation;
 
-
-import api.directed_weighted_graph;
-import api.edge_data;
-import api.node_data;
-
-import java.util.ArrayList;
+import api.*;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -155,6 +150,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 
 
     public boolean equals(Object obj) {
+
         if (getClass() != obj.getClass())
             return false;
         directed_weighted_graph anotherGraph = (directed_weighted_graph) obj;

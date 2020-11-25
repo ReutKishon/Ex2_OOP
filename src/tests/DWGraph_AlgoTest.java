@@ -1,11 +1,7 @@
 package tests;
 
-import api.directed_weighted_graph;
-import api.dw_graph_algorithms;
-import api.node_data;
-import graph_implementation.DWGraph_Algo;
-import graph_implementation.DWGraph_DS;
-import graph_implementation.Node;
+import graph_implementation.*;
+import api.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -143,7 +139,28 @@ class DWGraph_AlgoTest {
     }
 
     @Test
+    void shortestPath2() {
+        directed_weighted_graph g = createGraph();
+        dw_graph_algorithms ga = new DWGraph_Algo();
+        ga.init(g);
+        double res = ga.shortestPathDist(0, 3);
+        assertEquals(-1, res);
+    }
+
+    @Test
     void save() {
+        directed_weighted_graph g0 = createGraph();
+        dw_graph_algorithms ga = new DWGraph_Algo();
+        ga.init(g0);
+        ga.save("file.json");
+
+        dw_graph_algorithms ag1 = new DWGraph_Algo();
+        ag1.load("file.json");
+        assertEquals(g0, ag1.getGraph());
+//        g0.removeNode(0);
+//        assertNotEquals(g0, ag1.getGraph());
+//        ga.save("file.json");
+
     }
 
     @Test

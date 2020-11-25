@@ -1,10 +1,7 @@
 package tests;
 
-import api.directed_weighted_graph;
-import api.edge_data;
-import api.node_data;
-import graph_implementation.DWGraph_DS;
-import graph_implementation.Node;
+import api.*;
+import graph_implementation.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -48,7 +45,7 @@ class DWGraph_DSTest {
         directed_weighted_graph g = createGraph();
         g.connect(3, 0, 2);
         g.connect(3, 4, 6);
-        assertEquals(8,g.edgeSize());
+        assertEquals(8, g.edgeSize());
 
     }
 

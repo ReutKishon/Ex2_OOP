@@ -1,11 +1,15 @@
 package graph_implementation;
 
-import api.directed_weighted_graph;
-import api.dw_graph_algorithms;
-import api.edge_data;
-import api.node_data;
+import api.*;
 
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Type;
 import java.util.*;
+
+import com.google.gson.*;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
     private directed_weighted_graph graph;
@@ -215,7 +219,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         HashMap<Integer, Integer> parents = new HashMap<>();
         // start dijkstra
         Dijkstra(src, distances, parents);
-       // if there is no path between src to dest
+        // if there is no path between src to dest
         if (!distances.containsKey(dest)) {
             return -1;
         }
@@ -247,12 +251,28 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
     @Override
     public boolean save(String file) {
+
+        try (Writer writer = new FileWriter(file)) {
+            Gson gson = new Gson();
+            gson.toJson(graph, writer);
+            writer.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return false;
+
+
     }
 
     @Override
     public boolean load(String file) {
-        return false;
+
+//
+//        Gson gson = new Gson();
+//        directed_weighted_graph graph = gson.fromJson(file, DWGraph_DS.class);
+        return true;
     }
 
     private static class Pair {
@@ -272,12 +292,10 @@ public class DWGraph_Algo implements dw_graph_algorithms {
             return node;
         }
 
-        public void setWeight(double weight) {
-            this.weight = weight;
-        }
-
-        public void setNode(int node) {
-            this.node = node;
-        }
     }
+
+
+
 }
+
+

@@ -1,7 +1,7 @@
 package graph_implementation;
 
-import api.geo_location;
-import api.node_data;
+import api.*;
+
 
 public class Node implements node_data {
     private final int key;
