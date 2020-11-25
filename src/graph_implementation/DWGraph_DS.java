@@ -24,6 +24,7 @@ public class DWGraph_DS implements directed_weighted_graph {
         nodes = new HashMap<>();
         outEdges = new HashMap<>();
         inEdges = new HashMap<>();
+        Node.count = 0;
     }
 
 

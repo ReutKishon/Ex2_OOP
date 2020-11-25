@@ -43,12 +43,34 @@ class DWGraph_AlgoTest {
         copyGraph.removeEdge(2, 1);
         assertNotEquals(g, copyGraph);
         copyGraph.removeNode(2);
-        assertEquals(g,copyGraph);
+        assertEquals(g, copyGraph);
 
     }
 
     @Test
     void isConnected() {
+        directed_weighted_graph g = createGraph();
+        dw_graph_algorithms ga = new DWGraph_Algo();
+        ga.init(g);
+        assertFalse(ga.isConnected());
+
+        directed_weighted_graph g1 = new DWGraph_DS();
+        for (int i = 0; i < 5; i++) {
+            node_data n = new Node();
+            g1.addNode(n);
+        }
+        System.out.println();
+        g1.connect(1, 0, 1);
+        g1.connect(0, 2, 3);
+        g1.connect(2, 1, 5);
+        g1.connect(0, 3, 11);
+        g1.connect(3, 4, 2);
+        g1.connect(4, 0, 5);
+
+        ga.init(g1);
+        assertTrue(ga.isConnected());
+
+
     }
 
     @Test

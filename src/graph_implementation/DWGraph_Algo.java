@@ -5,14 +5,18 @@ import api.dw_graph_algorithms;
 import api.edge_data;
 import api.node_data;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
-    directed_weighted_graph graph;
+    private directed_weighted_graph graph;
+    private int visitedTag;
 
     @Override
     public void init(directed_weighted_graph g) {
         this.graph = g;
+        visitedTag = 1;
     }
 
     @Override
@@ -57,9 +61,96 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
     }
 
+    // A recursive function to print DFS starting from v
+    void DFSUtil(directed_weighted_graph g, int v) {
+        // Mark the current node as visited and print it
+        g.getNode(v).setTag(visitedTag);
+        System.out.print(v + " ");
+
+
+        // Recur for all the vertices adjacent to this vertex
+        for (edge_data edge : g.getE(v)) {
+            node_data dest = g.getNode(edge.getDest());
+            if (dest.getTag() != visitedTag)
+                DFSUtil(g, dest.getKey());
+        }
+    }
+
+
+    // Function that returns reverse (or transpose) of this graph
+    directed_weighted_graph getTranspose() {
+        directed_weighted_graph g = new DWGraph_DS();
+        for (node_data v : graph.getV()) {
+            // Recur for all the vertices adjacent to this vertex
+            for (edge_data edge : graph.getE(v.getKey())) {
+                int dest = edge.getDest();
+                double weight = edge.getWeight();
+                g.addNode(v);
+                g.addNode(graph.getNode(dest));
+                g.connect(dest, v.getKey(), weight);
+            }
+        }
+        return g;
+
+    }
+
+    void fillOrder(int v, Stack<Integer> stack) {
+        // Mark the current node as visited and print it
+        graph.getNode(v).setTag(visitedTag);
+
+        // Recur for all the vertices adjacent to this vertex
+        Iterator<edge_data> i = graph.getE(v).iterator();
+
+        // Recur for all the vertices adjacent to this vertex
+        for (edge_data edge : graph.getE(v)) {
+            node_data dest = graph.getNode(edge.getDest());
+            if (dest.getTag() != visitedTag)
+                fillOrder(dest.getKey(), stack);
+        }
+
+        // All vertices reachable from v are processed by now,
+        // push v to Stack
+        stack.push(v);
+    }
+
+
+    // The main function that finds and prints all strongly
+    // connected components
+    int sumSCCs() {
+        Stack<Integer> stack = new Stack<>();
+        int numberOfSCCs = 0;
+
+        // Fill vertices in stack according to their finishing
+        // times
+        visitedTag++;
+        for (node_data v : graph.getV()) {
+            if (v.getTag() != visitedTag)
+                fillOrder(v.getKey(), stack);
+        }
+
+        // Create a reversed graph
+        directed_weighted_graph gt = getTranspose();
+
+        visitedTag++;
+        // Now process all vertices in order defined by Stack
+        while (!stack.empty()) {
+            // Pop a vertex from stack
+            int v = stack.pop();
+
+            // Print Strongly connected component of the popped vertex
+            if (gt.getNode(v).getTag() != visitedTag) {
+                DFSUtil(gt, v);
+                System.out.println();
+                numberOfSCCs++;
+            }
+        }
+        return numberOfSCCs;
+    }
+
+
     @Override
     public boolean isConnected() {
-        return false;
+        return sumSCCs() == 1;
     }
 
     @Override
