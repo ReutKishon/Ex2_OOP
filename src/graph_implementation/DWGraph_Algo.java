@@ -5,9 +5,7 @@ import api.dw_graph_algorithms;
 import api.edge_data;
 import api.node_data;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
     private directed_weighted_graph graph;
@@ -153,14 +151,98 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         return sumSCCs() == 1;
     }
 
+
+    public void Dijkstra(int src, HashMap<Integer, Double> distances, HashMap<Integer, Integer> parents) {
+        PriorityQueue<Pair> priorityQueue = new PriorityQueue<Pair>(Comparator.comparing(Pair::getWeight));
+        visitedTag++;
+        // Add source node to the priority queue. A distance from src to itself is zero.
+        priorityQueue.add(new Pair(src, 0.0));
+
+        // Distance to the source is 0
+        distances.put(src, 0.0);
+        // checking for all the possible shortest path to every node from src , hench src does not have parent.
+        parents.put(src, -1);
+
+        int i = 0;
+        while (i != graph.nodeSize() && !priorityQueue.isEmpty()) {
+
+            // remove the minimum distance node
+            // from the priority queue
+            int u = priorityQueue.remove().getNode();
+
+            // adding the node whose distance is
+            // finalized
+//            settled.add(u);
+            graph.getNode(u).setTag(visitedTag);
+            i++;
+
+            NeighboursProcess(u, distances, priorityQueue, parents);
+        }
+    }
+
+    // Function to process all the neighbours
+    // of the passed node
+    private void NeighboursProcess(int u, HashMap<Integer, Double> dist, PriorityQueue<Pair> pq, HashMap<Integer, Integer> parents) {
+
+
+        // All the neighbors of v
+        for (edge_data edge : graph.getE(u)) {
+            node_data dest = graph.getNode(edge.getDest());
+            // If current node hasn't already been processed
+            if (dest.getTag() != visitedTag) {
+                double edgeDistance = edge.getWeight();
+                double newDistance = dist.get(u) + edgeDistance;
+
+                // If new distance is cheaper in cost
+                if (!dist.containsKey(dest.getKey()) || newDistance < dist.get(dest.getKey())) {
+                    dist.put(dest.getKey(), newDistance);
+                    //updating the parent of neighbor to u in order to restore the path later
+                    parents.put(dest.getKey(), u);
+
+                }
+
+                // Add the current node to the queue
+                pq.add(new Pair(dest.getKey(), dist.get(dest.getKey())));
+            }
+        }
+    }
+
+
     @Override
     public double shortestPathDist(int src, int dest) {
-        return 0;
+        if (graph == null) return -1;
+        HashMap<Integer, Double> distances = new HashMap<>();
+        HashMap<Integer, Integer> parents = new HashMap<>();
+        // start dijkstra
+        Dijkstra(src, distances, parents);
+       // if there is no path between src to dest
+        if (!distances.containsKey(dest)) {
+            return -1;
+        }
+
+        return distances.get(dest);
     }
 
     @Override
     public List<node_data> shortestPath(int src, int dest) {
-        return null;
+
+        if (graph == null) return null;
+
+        HashMap<Integer, Double> distances = new HashMap<>();
+        HashMap<Integer, Integer> parents = new HashMap<>();
+        Dijkstra(src, distances, parents);
+        if (distances.size() == 1 || !distances.containsKey(dest)) {
+            return null;
+        }
+        List<node_data> path = new LinkedList<>();
+        int tail = dest;
+        path.add(graph.getNode(tail));
+        while (parents.get(tail) != -1) {
+            path.add(graph.getNode(parents.get(tail)));
+            tail = parents.get(tail);
+        }
+        Collections.reverse(path);
+        return path;
     }
 
     @Override
@@ -173,4 +255,29 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         return false;
     }
 
+    private static class Pair {
+        private int node;
+        private double weight;
+
+        public Pair(int key, double weight) {
+            this.node = key;
+            this.weight = weight;
+        }
+
+        public double getWeight() {
+            return weight;
+        }
+
+        public int getNode() {
+            return node;
+        }
+
+        public void setWeight(double weight) {
+            this.weight = weight;
+        }
+
+        public void setNode(int node) {
+            this.node = node;
+        }
+    }
 }

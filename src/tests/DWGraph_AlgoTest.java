@@ -8,6 +8,8 @@ import graph_implementation.DWGraph_DS;
 import graph_implementation.Node;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class DWGraph_AlgoTest {
@@ -73,12 +75,71 @@ class DWGraph_AlgoTest {
 
     }
 
+
     @Test
     void shortestPathDist() {
+
+        directed_weighted_graph g1 = new DWGraph_DS();
+        for (int i = 0; i < 5; i++) {
+            node_data n = new Node();
+            g1.addNode(n);
+        }
+        System.out.println();
+        g1.connect(1, 0, 1);
+        g1.connect(0, 2, 3);
+        g1.connect(2, 1, 5);
+        g1.connect(0, 3, 11);
+        g1.connect(3, 4, 5);
+        g1.connect(4, 0, 8);
+        g1.connect(4, 3, 20);
+        g1.connect(4, 2, 1);
+
+
+        dw_graph_algorithms ga = new DWGraph_Algo();
+        ga.init(g1);
+        double res1 = ga.shortestPathDist(4, 1);
+        assertEquals(6, res1);
+        double res2 = ga.shortestPathDist(4, 3);
+        assertEquals(18, res2);
+        double res3 = ga.shortestPathDist(4, 0);
+        assertEquals(7, res3);
+
     }
 
     @Test
     void shortestPath() {
+
+        directed_weighted_graph g1 = new DWGraph_DS();
+        for (int i = 0; i < 5; i++) {
+            node_data n = new Node();
+            g1.addNode(n);
+        }
+        System.out.println();
+        g1.connect(1, 0, 1);
+        g1.connect(0, 2, 3);
+        g1.connect(2, 1, 5);
+        g1.connect(0, 3, 11);
+        g1.connect(3, 4, 5);
+        g1.connect(4, 0, 8);
+        g1.connect(4, 3, 20);
+        g1.connect(4, 2, 1);
+
+        dw_graph_algorithms ag0 = new DWGraph_Algo();
+        ag0.init(g1);
+        List<node_data> sp = ag0.shortestPath(4, 3);
+        int[] checkKey = {4, 2, 1, 0, 3};
+        int i = 0;
+        for (node_data n : sp) {
+            assertEquals(n.getKey(), checkKey[i]);
+            i++;
+        }
+        List<node_data> sp2 = ag0.shortestPath(4, 0);
+        int[] checkKey2 = {4, 2, 1, 0};
+        i = 0;
+        for (node_data n : sp2) {
+            assertEquals(n.getKey(), checkKey2[i]);
+            i++;
+        }
     }
 
     @Test
