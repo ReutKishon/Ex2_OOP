@@ -1,6 +1,7 @@
 package graph_implementation;
 
 import api.*;
+
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -12,6 +13,12 @@ public class DWGraph_DS implements directed_weighted_graph {
 
     private int modifyCount;
     private int edgesSize;
+
+    public DWGraph_DS(HashMap<Integer, node_data> nodes, HashMap<Integer, HashMap<Integer, edge_data>> outEdges, HashMap<Integer, HashMap<Integer, edge_data>> inEdges) {
+        this.nodes = nodes;
+        this.outEdges = outEdges;
+        this.inEdges = inEdges;
+    }
 
     public DWGraph_DS() {
         edgesSize = 0;
@@ -147,8 +154,6 @@ public class DWGraph_DS implements directed_weighted_graph {
     }
 
 
-
-
     public boolean equals(Object obj) {
 
         if (getClass() != obj.getClass())
@@ -172,7 +177,7 @@ public class DWGraph_DS implements directed_weighted_graph {
                 if (anotherGraph.getNode(edge.getDest()) == null) return false;
 
                 //if anotherGraph does not contain the edge {n,dest}
-                if (anotherGraph.getEdge(n.getKey(), edge.getDest())== null) {
+                if (anotherGraph.getEdge(n.getKey(), edge.getDest()) == null) {
                     return false;
                 }
             }

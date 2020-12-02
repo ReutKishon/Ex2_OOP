@@ -2,14 +2,12 @@ package graph_implementation;
 
 import api.*;
 
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Type;
+import java.io.*;
 import java.util.*;
 
 import com.google.gson.*;
+import json.EdgeDataInstanceCreator;
+import json.NodeDataInstanceCreator;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
     private directed_weighted_graph graph;
@@ -269,11 +267,24 @@ public class DWGraph_Algo implements dw_graph_algorithms {
     @Override
     public boolean load(String file) {
 
-//
-//        Gson gson = new Gson();
-//        directed_weighted_graph graph = gson.fromJson(file, DWGraph_DS.class);
+        FileInputStream inputStream;
+        try {
+            inputStream = new FileInputStream((file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(node_data.class, new NodeDataInstanceCreator());
+        gsonBuilder.registerTypeAdapter(edge_data.class, new EdgeDataInstanceCreator());
+        Gson gson = gsonBuilder.create();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        graph = gson.fromJson(reader, DWGraph_DS.class);
+
         return true;
     }
+
 
     private static class Pair {
         private int node;
@@ -293,7 +304,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         }
 
     }
-
 
 
 }
