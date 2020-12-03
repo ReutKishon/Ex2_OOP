@@ -6,8 +6,8 @@ import java.io.*;
 import java.util.*;
 
 import com.google.gson.*;
-import json.EdgeDataInstanceCreator;
-import json.NodeDataInstanceCreator;
+import json.DWGraphSerializer;
+import json.DwGraphDeserializer;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
     private directed_weighted_graph graph;
@@ -246,12 +246,31 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         Collections.reverse(path);
         return path;
     }
-
-    @Override
+//
+//    @Override
+//    public boolean save(String file) {
+//
+//        try (Writer writer = new FileWriter(file)) {
+//            Gson gson = new Gson();
+//
+//            gson.toJson(graph, writer);
+//            writer.close();
+//            return true;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return false;
+//
+//
+//    }
+   @Override
     public boolean save(String file) {
 
         try (Writer writer = new FileWriter(file)) {
-            Gson gson = new Gson();
+            var gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeAdapter(DWGraph_DS.class, new DWGraphSerializer());
+            var gson = gsonBuilder.create();
             gson.toJson(graph, writer);
             writer.close();
             return true;
@@ -276,9 +295,9 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         }
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(node_data.class, new NodeDataInstanceCreator());
-        gsonBuilder.registerTypeAdapter(edge_data.class, new EdgeDataInstanceCreator());
-        Gson gson = gsonBuilder.create();
+        gsonBuilder.registerTypeAdapter(DWGraph_DS.class, new DwGraphDeserializer());
+        var gson = gsonBuilder.create();
+
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         graph = gson.fromJson(reader, DWGraph_DS.class);
 
