@@ -6,8 +6,8 @@ public class Edge implements edge_data {
     private final int src;
     private final int dest;
     private final double weight;
-    private String info;
-    private int tag;
+    private transient String info;
+    private transient int tag;
 
     public Edge(int src, int dest, double weight) {
         this.src = src;

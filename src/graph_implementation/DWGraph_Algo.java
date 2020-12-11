@@ -6,8 +6,9 @@ import java.io.*;
 import java.util.*;
 
 import com.google.gson.*;
-import json.DWGraphSerializer;
-import json.DwGraphDeserializer;
+import com.google.gson.reflect.TypeToken;
+import gameClient.util.Point3D;
+import json.DWGraphJsonAdapter;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
     private directed_weighted_graph graph;
@@ -35,7 +36,8 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         for (node_data n : graph.getV()) {
             //copy the node if it's not created
             if (copyGraph.getNode(n.getKey()) == null) {
-                copyGraph.addNode(new Node(n.getKey(), n.getTag(), n.getLocation(), n.getWeight(), n.getInfo()));
+                Point3D p = new Point3D(n.getLocation().x(), n.getLocation().y(), n.getLocation().z());
+                copyGraph.addNode(new Node(n.getKey(), n.getTag(), p, n.getWeight(), n.getInfo()));
 
             }
 
@@ -43,7 +45,9 @@ public class DWGraph_Algo implements dw_graph_algorithms {
                 node_data dest = graph.getNode(edge.getDest());
                 //copy neighbor
                 if (copyGraph.getNode(dest.getKey()) == null) {
-                    copyGraph.addNode(new Node(dest.getKey(), dest.getTag(), dest.getLocation(), dest.getWeight(), dest.getInfo()));
+                    Point3D p = new Point3D(dest.getLocation().x(), dest.getLocation().y(), dest.getLocation().z());
+
+                    copyGraph.addNode(new Node(dest.getKey(), dest.getTag(), p, dest.getWeight(), dest.getInfo()));
 
                 }
 
@@ -246,7 +250,8 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         Collections.reverse(path);
         return path;
     }
-//
+
+    //
 //    @Override
 //    public boolean save(String file) {
 //
@@ -264,12 +269,14 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 //
 //
 //    }
-   @Override
+    @Override
     public boolean save(String file) {
 
         try (Writer writer = new FileWriter(file)) {
-            var gsonBuilder = new GsonBuilder();
-            gsonBuilder.registerTypeAdapter(DWGraph_DS.class, new DWGraphSerializer());
+            var gsonBuilder = new GsonBuilder().setPrettyPrinting();
+
+            gsonBuilder.registerTypeAdapter(DWGraph_DS.class, new DWGraphJsonAdapter());
+
             var gson = gsonBuilder.create();
             gson.toJson(graph, writer);
             writer.close();
@@ -295,7 +302,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         }
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(DWGraph_DS.class, new DwGraphDeserializer());
+        gsonBuilder.registerTypeAdapter(DWGraph_DS.class, new DWGraphJsonAdapter());
         var gson = gsonBuilder.create();
 
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -324,6 +331,21 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
     }
 
+    public static class ABCAdapterFactory implements TypeAdapterFactory {
+        private final Class<? extends geo_location> implementationClass;
+
+        public ABCAdapterFactory(Class<? extends geo_location> implementationClass) {
+            this.implementationClass = implementationClass;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+            if (!geo_location.class.equals(type.getRawType())) return null;
+
+            return (TypeAdapter<T>) gson.getAdapter(implementationClass);
+        }
+    }
 
 }
 

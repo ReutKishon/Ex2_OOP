@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -33,7 +35,13 @@ public class Ex2 implements Runnable {
 
         game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
         dw_graph_algorithms ga = new DWGraph_Algo();
-        boolean isLoaded = ga.load(game.getGraph());
+        try (FileWriter file = new FileWriter("jsonGraph.json")) {
+            file.write(game.getGraph());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        boolean isLoaded = ga.load("jsonGraph.json");
         if (!isLoaded) try {
             throw new Exception("can not load the graph");
         } catch (Exception e) {
@@ -65,10 +73,7 @@ public class Ex2 implements Runnable {
 //            }
 
 
-        }
-
-
-
+    }
 
 
     @Override

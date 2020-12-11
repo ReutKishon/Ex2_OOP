@@ -4,39 +4,39 @@ import api.*;
 
 
 public class Node implements node_data {
-    private final int key;
-    private geo_location geoLocation;
-    private double weight;
-    private String info;
-    private int tag;
+    public final int id;
+    public geo_location pos;
+    private transient double weight;
+    private transient String info;
+    private transient int tag;
     public static int count = 0;
 
     public Node() {
-        key = count++;
+        id = count++;
         tag = 0;
     }
 
-    public Node(int key, int tag, geo_location location, double weight, String info) {
-        this.key = key;
+    public Node(int id, int tag, geo_location location, double weight, String info) {
+        this.id = id;
         this.tag = tag;
-        this.geoLocation = location;
+        this.pos = location;
         this.weight = weight;
         this.info = info;
     }
 
     @Override
     public int getKey() {
-        return key;
+        return id;
     }
 
     @Override
     public geo_location getLocation() {
-        return geoLocation;
+        return pos;
     }
 
     @Override
     public void setLocation(geo_location p) {
-        this.geoLocation = p;
+        this.pos = p;
     }
 
     @Override

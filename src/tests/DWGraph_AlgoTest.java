@@ -1,5 +1,6 @@
 package tests;
 
+import gameClient.util.Point3D;
 import graph_implementation.*;
 import api.*;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ class DWGraph_AlgoTest {
         directed_weighted_graph g = new DWGraph_DS();
         for (int i = 0; i < 5; i++) {
             node_data n = new Node();
+            n.setWeight(5);
+            n.setLocation(new Point3D(5,3,4));
             g.addNode(n);
         }
         g.connect(0, 4, 4);
