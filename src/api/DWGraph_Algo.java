@@ -1,6 +1,4 @@
-package graph_implementation;
-
-import api.*;
+package api;
 
 import java.io.*;
 import java.util.*;
@@ -306,7 +304,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
         var gson = gsonBuilder.create();
 
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        graph = gson.fromJson(reader, DWGraph_DS.class);
+        this.graph = gson.fromJson(reader, DWGraph_DS.class);
 
         return true;
     }

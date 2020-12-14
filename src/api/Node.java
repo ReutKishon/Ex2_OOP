@@ -1,6 +1,4 @@
-package graph_implementation;
-
-import api.*;
+package api;
 
 
 public class Node implements node_data {

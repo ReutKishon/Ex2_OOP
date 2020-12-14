@@ -1,6 +1,4 @@
-package graph_implementation;
-
-import api.*;
+package api;
 
 import java.util.Collection;
 import java.util.HashMap;

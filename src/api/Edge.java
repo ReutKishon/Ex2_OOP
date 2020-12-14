@@ -1,6 +1,4 @@
-package graph_implementation;
-
-import api.edge_data;
+package api;
 
 public class Edge implements edge_data {
     private final int src;

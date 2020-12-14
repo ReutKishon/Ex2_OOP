@@ -1,8 +1,12 @@
 package tests;
 
+import api.DWGraph_Algo;
+import api.dw_graph_algorithms;
+import api.DWGraph_DS;
+import api.Node;
+import api.directed_weighted_graph;
+import api.node_data;
 import gameClient.util.Point3D;
-import graph_implementation.*;
-import api.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

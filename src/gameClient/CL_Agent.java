@@ -35,7 +35,7 @@ public class CL_Agent {
 		public void update(String json) {
 			JSONObject line;
 			try {
-				// "GameServer":{"graph":"A0.json","pokemons":3,"agents":1}}
+				// "GameServer":{"graph":"A0","pokemons":3,"agents":1}}
 				line = new JSONObject(json);
 				JSONObject ttt = line.getJSONObject("Agent");
 				int id = ttt.getInt("id");
