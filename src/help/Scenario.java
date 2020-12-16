@@ -1,11 +1,12 @@
 package help;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 import Server.Game_Server_Ex2;
 import api.*;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonWriter;
 import gameClient.util.Point3D;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,10 +38,14 @@ public class Scenario {
         this.num = scenario_num;
         this.game = Game_Server_Ex2.getServer(scenario_num);
         String graphJson = game.getGraph();
-        FileWriter file = new FileWriter("graph.json");
-        file.write(graphJson);
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("graphJson.txt"));
+        writer.write(graphJson);
+        writer.close();
+
+
         graph_algo = new DWGraph_Algo();
-        graph_algo.load("graph.json");
+        graph_algo.load("graphJson.txt");
         graph = graph_algo.getGraph();
         String info = game.toString();
 
@@ -59,7 +64,7 @@ public class Scenario {
             line = new JSONObject(info);
             JSONObject gameServerObject = line.getJSONObject("GameServer");
             int agentsNum = gameServerObject.getInt("agents");
-            Game_Algo.addAgentNearPokemon(agentsNum, pokemonsList, game,graph);
+            Game_Algo.addAgentNearPokemon(agentsNum, pokemonsList, game, graph);
         } catch (JSONException e) {
             e.printStackTrace();
         }

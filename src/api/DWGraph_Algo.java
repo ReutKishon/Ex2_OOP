@@ -7,6 +7,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import gameClient.util.Point3D;
 import json.DWGraphJsonAdapter;
+import json.GeoLocationJsonAdapter;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
     private directed_weighted_graph graph;
@@ -301,6 +302,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(DWGraph_DS.class, new DWGraphJsonAdapter());
+
         var gson = gsonBuilder.create();
 
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -329,21 +331,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
     }
 
-    public static class ABCAdapterFactory implements TypeAdapterFactory {
-        private final Class<? extends geo_location> implementationClass;
 
-        public ABCAdapterFactory(Class<? extends geo_location> implementationClass) {
-            this.implementationClass = implementationClass;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-            if (!geo_location.class.equals(type.getRawType())) return null;
-
-            return (TypeAdapter<T>) gson.getAdapter(implementationClass);
-        }
-    }
 
 }
 

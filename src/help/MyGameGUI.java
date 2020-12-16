@@ -1,11 +1,9 @@
-//package gameClient;
+//package help;
 //
-//import Server.game_service;
-//import algorithms.Graph_Algo;
-//import api.game_service;
-//import dataStructure.*;
+//import api.*;
+//import gameClient.util.Point3D;
+//import gameClient.util.Range;
 //import org.json.JSONObject;
-//import utils.Point3D;
 //
 //import javax.imageio.ImageIO;
 //import javax.swing.*;
@@ -17,24 +15,17 @@
 //import java.util.*;
 //import java.util.List;
 //
-//import dataStructure.DGraph;
-//import dataStructure.graph;
-//import dataStructure.node_data;
-//import utils.Range;
-//
-//import static gameClient.KML_Logger.KML_Save;
-//import static gameClient.SimpleDB.*;
 //
 //public class MyGameGUI<Public> extends JFrame implements MouseListener {
 //
-//    graph gra = new DGraph();                   //GUI elements
+//    directed_weighted_graph graph = new DWGraph_DS();                   //GUI elements
 //    Scenario s;
-//    Graph_Algo ga = new Graph_Algo();
+//    dw_graph_algorithms ga = new DWGraph_Algo();
 //    JMenuBar menuFrame;
-//    JMenu fileMenu, robotsMenu,gameTable;
-//    JMenuItem openItem, saveKmlItem, saveItem, automaticItem, manualItem, savePngItem,BestTableItem,CompTableItem;
+//    JMenu fileMenu, robotsMenu, gameTable;
+//    JMenuItem openItem, saveKmlItem, saveItem, automaticItem, manualItem, savePngItem, BestTableItem, CompTableItem;
 //
-//    LinkedList<Point3D> points = new LinkedList<Point3D>();         //Compilations elements
+//    LinkedList<Point3D> points = new LinkedList<>();         //Compilations elements
 //    private int kRADIUS = 5;
 //    game_service game;
 //    List<String> fruits = new ArrayList<>();
@@ -76,7 +67,7 @@
 //     * constructor for gui with graph parameter
 //     */
 //
-//    public MyGameGUI(graph g) {                              //starting with a loaded graph
+//    public MyGameGUI(directed_weighted_graph g) {                              //starting with a loaded graph
 //        myGame();
 //        this.setVisible(true);
 //        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -84,12 +75,12 @@
 //        this.setLayout(new FlowLayout());
 //        this.setBounds(500, 500, 600, 600);
 //        this.setTitle("The maze of Waze 3");
-//        this.gra = g;
+//        this.graph = g;
 //        this.ga.init(g);
-//        Collection<node_data> nd = this.gra.getV();
+//        Collection<node_data> nd = this.graph.getV();
 //        Iterator<node_data> it = nd.iterator();             //painting the loaded graph
 //        while (it.hasNext()) {
-//            points.add(it.next().getLocation());
+//            points.add((Point3D) it.next().getLocation());
 //        }
 //        actionsGui();
 //
@@ -225,13 +216,14 @@
 //            }
 //        });
 //    }
+//
 //    /**
 //     * Option A is for showing number of games id results,and current level and top score of id player
 //     */
 //
 //    private void aTable() {
 //        JFrame f = new JFrame();
-//        SimpleDB.main(null);
+////        SimpleDB.main(null);
 //
 //        String col[] = {"Place", "Level number", "Score", "Moves", "Date"};
 //
@@ -240,11 +232,11 @@
 //
 //        JTable table = new JTable(tableModel);
 //
-//        JOptionPane.showMessageDialog(f, "Number of games: " +numberGames
-//        +"\nCurrent level:  23");
+//        JOptionPane.showMessageDialog(f, "Number of games: " + numberGames
+//                + "\nCurrent level:  23");
 //
 //        //our top score
-//        numberGames=0;
+//        numberGames = 0;
 //        for (int i = 0; i < 24; i++) {
 //            int id0 = SimpleDB.id.get(i);
 //            int sco = score.get(i);
@@ -260,30 +252,31 @@
 //
 //        }
 //
-//            table.setBounds(30, 40, 200, 300);
-//            // adding it to JScrollPane
-//            JScrollPane sp = new JScrollPane(table);
-//            f.add(sp);
+//        table.setBounds(30, 40, 200, 300);
+//        // adding it to JScrollPane
+//        JScrollPane sp = new JScrollPane(table);
+//        f.add(sp);
 //
-//            // Frame Size
-//            f.setSize(500, 200);
-//            TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
-//            table.setRowSorter(sorter);
+//        // Frame Size
+//        f.setSize(500, 200);
+//        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+//        table.setRowSorter(sorter);
 //
-//            List<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
-//            sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-//            //sortKeys.add(new RowSorter.SortKey(0, SortOrder.DESCENDING));
-//            sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
-//            sortKeys.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
-//            sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
-//            sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
-//            sorter.setSortKeys(sortKeys);
-//            f.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//            // Frame Visible = true
-//            f.setVisible(true);
+//        List<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
+//        sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+//        //sortKeys.add(new RowSorter.SortKey(0, SortOrder.DESCENDING));
+//        sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+//        sortKeys.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
+//        sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
+//        sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
+//        sorter.setSortKeys(sortKeys);
+//        f.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        // Frame Visible = true
+//        f.setVisible(true);
 //
 //
 //    }
+//
 //    /**
 //     * Option B is for watching the location of player compared to all of the players
 //     */
@@ -300,11 +293,11 @@
 //
 //        JTable table = new JTable(tableModel);
 //        int i = 0;
-//        while (i<24) {
+//        while (i < 24) {
 //
 //            Object[] data = {i, maxScore[i], PosLevel[i]};
 //
-//           tableModel.addRow(data);
+//            tableModel.addRow(data);
 //            i++;
 //        }
 //
@@ -329,16 +322,15 @@
 //    }
 //
 //
-//
 //    /**
 //     * Save KML file using KML logger
 //     */
 //    private void SaveKML() {
-//       int i =  Integer.parseInt(JOptionPane.showInputDialog("Enter scenario number between 0-23"));
-//                Scenario s = new Scenario(i); // you have [0,23] games
-//                KML_Save(s);
+//        int i = Integer.parseInt(JOptionPane.showInputDialog("Enter scenario number between 0-23"));
+//        Scenario s = new Scenario(i); // you have [0,23] games
+//        KML_Save(s);
 //
-//            JOptionPane.showMessageDialog(null, "Save complete");
+//        JOptionPane.showMessageDialog(null, "Save complete");
 //
 //    }
 //
@@ -398,8 +390,8 @@
 //            FileInputStream file = new FileInputStream(fileName);
 //            ObjectInputStream in = new ObjectInputStream(file);
 //
-//            this.gra = (graph) in.readObject();
-//            ga.init(gra);
+//            this.graph = (graph) in.readObject();
+//            ga.init(graph);
 //            repaint();
 //            in.close();
 //            file.close();
@@ -423,7 +415,7 @@
 //        fd.setFilenameFilter((dir, name) -> name.endsWith(".txt"));
 //        fd.setVisible(true);
 //        String fileName = fd.getFile();
-//        graph g = this.gra;
+//        graph g = this.graph;
 //        try {
 //            FileOutputStream file = new FileOutputStream(fileName);
 //            ObjectOutputStream out = new ObjectOutputStream(file);
@@ -483,7 +475,7 @@
 //    @Override
 //    public void paintComponents(Graphics g) {                                 //swing implementation of paint method
 //        super.paint(g);
-//        Collection<node_data> ver = this.gra.getV();
+//        Collection<node_data> ver = this.graph.getV();
 //        Iterator<node_data> it = ver.iterator();
 //        while (it.hasNext()) {
 //            node_data nd = it.next();
@@ -496,11 +488,11 @@
 //            g.drawString(Integer.toString(nd.getKey()), (int) (rangeX(p.x())), -10 + (int) (rangeY(p.y())));
 //            path.put(p, nd.getKey());
 //
-//            Iterator<edge_data> it1 = this.gra.getE(nd.getKey()).iterator();
+//            Iterator<edge_data> it1 = this.graph.getE(nd.getKey()).iterator();
 //            while (it1.hasNext()) {
 //                edge_data ed = it1.next();
-//                Point3D psrc = this.gra.getNode(ed.getSrc()).getLocation();
-//                Point3D pdest = this.gra.getNode(ed.getDest()).getLocation();
+//                Point3D psrc = this.graph.getNode(ed.getSrc()).getLocation();
+//                Point3D pdest = this.graph.getNode(ed.getDest()).getLocation();
 //
 //                g.setColor(Color.YELLOW);
 //                g.fillOval((int) (Math.round(((rangeX(psrc.x()) * (0.1) + rangeX(pdest.x()) * (0.9)))) - kRADIUS),
@@ -509,7 +501,7 @@
 //                g.setColor(Color.RED);
 //                g.drawLine((int) rangeX(pdest.x()), (int) rangeY(pdest.y()), (int) rangeX(psrc.x()), (int) rangeY(psrc.y()));
 //
-//                double dist = this.gra.getEdge(ed.getSrc(), ed.getDest()).getWeight();
+//                double dist = this.graph.getEdge(ed.getSrc(), ed.getDest()).getWeight();
 //                g.drawString(String.format("%.2f", dist),
 //                        (int) (Math.round(((rangeX(psrc.x()) * (0.3) + rangeX(pdest.x()) * (0.7)))) - kRADIUS),
 //                        (int) (Math.round((rangeY(psrc.y()) * (0.3) + rangeY(pdest.y()) * (0.7))) - kRADIUS));
@@ -665,15 +657,15 @@
 //        s = new Scenario(scenario);
 //        robots = s.game.getRobots();
 //        fruits = s.game.getFruits();
-//        this.gra = s.graph;
-//        this.ga.init(this.gra);
+//        this.graph = s.graph;
+//        this.ga.init(this.graph);
 //        game = s.game;
 //        players = s.agents.size();
 //
 ///**
 // *   Update nodes to gui window
 // */
-//        Collection<node_data> c = this.gra.getV();
+//        Collection<node_data> c = this.graph.getV();
 //        Iterator<node_data> itrV = c.iterator();
 //        while (itrV.hasNext()) {
 //            node_data n = itrV.next();
@@ -739,7 +731,7 @@
 //            double min_dist = (kRADIUS * 3);
 //            double best_dist = 100000;
 //
-//            Collection<node_data> ver = gra.getV();
+//            Collection<node_data> ver = graph.getV();
 //            Iterator<node_data> itr = ver.iterator();
 //            while (itr.hasNext()) {
 //                node_data n = itr.next();

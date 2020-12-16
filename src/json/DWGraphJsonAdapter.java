@@ -13,20 +13,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
-class GeoLocationJsonAdapter implements JsonSerializer<Point3D>, JsonDeserializer<Point3D> {
-
-    @Override
-    public Point3D deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        return null;
-    }
-
-    @Override
-    public JsonElement serialize(Point3D point3D, Type type, JsonSerializationContext jsonSerializationContext) {
-        var locationStr = "" + point3D.x() + ", " + point3D.y() + ", " + point3D.z();
-        return new JsonPrimitive(locationStr);
-    }
-}
-
 public class DWGraphJsonAdapter implements JsonSerializer<DWGraph_DS>, JsonDeserializer<DWGraph_DS> {
 
 
@@ -65,22 +51,23 @@ public class DWGraphJsonAdapter implements JsonSerializer<DWGraph_DS>, JsonDeser
 
     @Override
     public DWGraph_DS deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        var dwGraphJson = jsonElement.getAsJsonObject();
+        JsonObject dwGraphJson = jsonElement.getAsJsonObject();
+
         var edges = gsonBuilder.create().fromJson(dwGraphJson.get("Edges"), Edge[].class);
         var nodes = gsonBuilder.create().fromJson(dwGraphJson.get("Nodes"), Node[].class);
 
 
         var graphDw = new DWGraph_DS();
+        for (node_data node : nodes) {
+            node_data n = new Node(node.getKey(), node.getTag(), node.getLocation(), node.getWeight(), node.getInfo());
+            graphDw.addNode(n);
+
+        }
 
         for (edge_data edge : edges) {
-            graphDw.addNode(new Node(edge.getSrc(), 0, null, 0, null));
-            graphDw.addNode(new Node(edge.getDest(), 0, null, 0, null));
+//            graphDw.addNode(new Node(edge.getSrc(), 0, null, 0, null));
+//            graphDw.addNode(new Node(edge.getDest(), 0, null, 0, null));
             graphDw.connect(edge.getSrc(), edge.getDest(), edge.getWeight());
-        }
-        for (node_data node : nodes) {
-            if (graphDw.getNode(node.getKey()) == null) {
-                graphDw.addNode(node);
-            }
         }
 
 

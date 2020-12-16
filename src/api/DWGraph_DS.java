@@ -1,5 +1,9 @@
 package api;
 
+import gameClient.util.Point3D;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -16,6 +20,37 @@ public class DWGraph_DS implements directed_weighted_graph {
         this.nodes = nodes;
         this.outEdges = outEdges;
         this.inEdges = inEdges;
+    }
+
+    public void init(String s) {
+        try {
+            JSONObject g = new JSONObject(s);
+            JSONArray nodes = g.getJSONArray("Nodes");
+            JSONArray edges = g.getJSONArray("Edges");
+
+            for (int i = 0; i < nodes.length(); i++) {
+                int id = nodes.getJSONObject(i).getInt("id");
+                int tag = nodes.getJSONObject(i).getInt("tag");
+
+                String pi = nodes.getJSONObject(i).getString("pos");
+                Point3D Pi = new Point3D(pi);
+
+                Node ni = new Node(id, tag, Pi, 0.0, null);
+
+                this.addNode(ni);
+
+            }
+            for (int i = 0; i < edges.length(); i++) {
+                int sr = edges.getJSONObject(i).getInt("src");
+                int d = edges.getJSONObject(i).getInt("dest");
+                double w = edges.getJSONObject(i).getDouble("w");
+                connect(sr, d, w);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public DWGraph_DS() {
@@ -163,12 +198,14 @@ public class DWGraph_DS implements directed_weighted_graph {
         }
 
         for (node_data n : this.getV()) {
-
+            node_data v = anotherGraph.getNode(n.getKey());
             // if anotherGraph does not contain n
-            if (anotherGraph.getNode(n.getKey()) == null) {
+            if (v == null) {
 
                 return false;
             }
+
+            if (!n.getLocation().equals(v.getLocation())) return false;
 
             for (edge_data edge : this.getE(n.getKey())) {
 
