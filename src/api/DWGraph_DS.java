@@ -95,6 +95,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 
     @Override
     public void connect(int src, int dest, double w) {
+        if (getNode(src) == null || getNode(dest) == null) return;
         //A node connected to itself is forbidden.
         if (src == dest) return;
         // if the edge {src,dest} doesn't exist , then connect them

@@ -81,5 +81,15 @@ public class Scenario {
 
     }
 
+    public ArrayList<Agent> getAgentsList() {
+        return agentsList;
+    }
 
+    public directed_weighted_graph getGraph() {
+        return graph;
+    }
+
+    public ArrayList<Pokemon> getPokemonsList() {
+        return pokemonsList;
+    }
 }

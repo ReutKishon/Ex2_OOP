@@ -14,6 +14,12 @@ public class Node implements node_data {
         tag = 0;
     }
 
+    public Node(int id, geo_location location) {
+        this.id = id;
+        this.weight = weight;
+        this.pos = location;
+    }
+
     public Node(int id, int tag, geo_location location, double weight, String info) {
         this.id = id;
         this.tag = tag;
