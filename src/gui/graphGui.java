@@ -1,8 +1,12 @@
 //package gui;
 //
-//import algorithms.Graph_Algo;
-//import dataStructure.*;
-//import utils.Point3D;
+//
+//
+//import api.*;
+//import gameClient.MyGui;
+//import gameClient.util.Point3D;
+//import help.Agent;
+//import help.Pokemon;
 //
 //import java.awt.*;
 //import java.awt.event.*;
@@ -14,8 +18,8 @@
 //import javax.swing.*;
 //
 //public class graphGui extends JFrame implements Serializable, MouseListener, MouseMotionListener {
-//    graph gra = new DGraph();                   //GUI elements
-//    Graph_Algo ga = new Graph_Algo();
+//    directed_weighted_graph gra = new DWGraph_DS();                   //GUI elements
+//    dw_graph_algorithms ga = new DWGraph_Algo();
 //    JMenuBar menuFrame;
 //    JMenu fileMenu, AlgorithmsMenu;
 //    JMenuItem openItem, createItem, saveItem, ShortestPathLengthItem, ShortestPathRouteItem, TravelSalesmanProblemItem, IsConnectedItem, savePngItem, generateItem;
@@ -40,7 +44,7 @@
 //        this.setVisible(true);
 //    }
 //
-//    public graphGui(graph g) {                              //starting with a loaded graph
+//    public graphGui(directed_weighted_graph g) {                              //starting with a loaded graph
 //        this.setVisible(true);
 //        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        this.setLayout(new FlowLayout());
@@ -48,10 +52,9 @@
 //        this.setTitle("The maze of Waze");
 //        this.gra = g;
 //        this.ga.init(g);
-//        Collection<node_data> nd = this.gra.getV();
-//        Iterator<node_data> it = nd.iterator();             //painting the loaded graph
-//        while (it.hasNext()) {
-//            points.add(it.next().getLocation());
+//        //painting the loaded graph
+//        for (node_data node_data : gra.getV()) {
+//            points.add((Point3D) node_data.getLocation());
 //        }
 //
 //        repaint();
@@ -60,7 +63,6 @@
 //
 //
 //    }
-//
 //
 //
 //    public void initComponents() {                          //creating the tabs of the GUI
@@ -78,14 +80,6 @@
 //        openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 //        fileMenu.add(openItem);
 //
-//        saveItem = new JMenuItem("Save");
-//        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-//        fileMenu.add(saveItem);
-//
-//        savePngItem = new JMenuItem("Save as Png");
-//        savePngItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
-//        fileMenu.add(savePngItem);
-//
 //        createItem = new JMenuItem("Create");
 //        createItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
 //        fileMenu.add(createItem);
@@ -96,53 +90,15 @@
 //
 //        menuFrame.add(fileMenu);
 //
-//        // set algorithms menu
-//        AlgorithmsMenu = new JMenu("Algorithms");
-//        ShortestPathLengthItem = new JMenuItem("Shortest Path Length");
-//        ShortestPathLengthItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
-//        AlgorithmsMenu.add(ShortestPathLengthItem);
 //
-//        ShortestPathRouteItem = new JMenuItem("Shortest Path Route");
-//        ShortestPathRouteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
-//        AlgorithmsMenu.add(ShortestPathRouteItem);
-//
-//        TravelSalesmanProblemItem = new JMenuItem("Travel Salesman Problem");
-//        TravelSalesmanProblemItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.CTRL_MASK));
-//        AlgorithmsMenu.add(TravelSalesmanProblemItem);
-//
-//        IsConnectedItem = new JMenuItem("Is connected?");
-//        IsConnectedItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_4, ActionEvent.CTRL_MASK));
-//        AlgorithmsMenu.add(IsConnectedItem);
-//
-//        menuFrame.add(AlgorithmsMenu);
-//        if (mCreate) {                          //if the user chose create option then the mouse listener will come to live
-//            this.ga.init(this.gra);
-//
-//            this.addMouseListener(this);
-//            this.addMouseMotionListener(this);
-//        }
 //    }
+//
 //
 //    public void actionsGui() {                  //After user chose an option the GUI option will execute the option here
 //
-//        openItem.addActionListener(new ActionListener() {        //File menu actions
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                readFileDialog();
-//            }
-//        });
-//        saveItem.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                writeFileDialog();
-//                actionsGui();
-//            }
-//        });
-//        savePngItem.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                savePng();
-//                actionsGui();
-//            }
-//        });
+//
+//
+//
 //        createItem.addActionListener(new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
@@ -162,92 +118,52 @@
 //                actionsGui();
 //            }
 //        });
-//        // Algorithms menu actions
-//        ShortestPathLengthItem.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                shortPathLeng();
-//                actionsGui();
-//            }
-//        });
-//        ShortestPathRouteItem.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                shortPathList();
-//                actionsGui();
-//            }
-//        });
-//        TravelSalesmanProblemItem.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                TSPgui();
-//                actionsGui();
-//            }
-//        });
-//        IsConnectedItem.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                isconnected();
-//                actionsGui();
-//            }
-//        });
-//    }
-//
-//    private void savePng() {                            //save the graph as png
-//        try {
-//            BufferedImage img = new BufferedImage(this.getWidth(), this.getHeight() + 45, BufferedImage.TYPE_INT_RGB);
-//            Graphics g = img.getGraphics();
-//            paint(g);
-//            ImageIO.write(img, "png", new File("Graph.png"));
-//            JFrame j = new JFrame();
-//            JOptionPane.showMessageDialog(j, "Graph is saved,now the GUI will close");
-//            j.setDefaultCloseOperation(3);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void isconnected() {                       //check if graph is connected
-//        ga.init(this.gra);
-//        boolean connect = false;
-//        connect = this.ga.isConnected();
-//        JFrame j = new JFrame();
-//        if (connect) {
-//            JOptionPane.showMessageDialog(j, "Graph is connected");
-//            j.setDefaultCloseOperation(3);
-//        } else {
-//            JOptionPane.showMessageDialog(j, "Graph is not connected");
-//            j.setDefaultCloseOperation(3);
-//        }
-//        actionsGui();
-//    }
-//
-//    //all the mouse options are for the create option
-//    @Override
-//    public void mouseDragged(MouseEvent e) {
-//        int x = e.getX();
-//        int y = e.getY();
-//        if (mDraw_pivot) {
-//            mPivot_point.setX(x);
-//            mPivot_point.setY(y);
-//
-//            repaint();
-//        }
 //
 //    }
 //
-//    @Override
-//    public void mouseMoved(MouseEvent e) {
-//        int x = e.getX();
-//        int y = e.getY();
-//        if (mDraw_pivot) {
-//            mPivot_point.setX(x);
-//            mPivot_point.setY(y);
 //
-//            repaint();
-//        }
-//        actionsGui();
-//    }
+//
+//
+////    //all the mouse options are for the create option
+////    @Override
+////    public void mouseDragged(MouseEvent e) {
+////        int x = e.getX();
+////        int y = e.getY();
+////        if (mDraw_pivot) {
+////            mPivot_point.setX(x);
+////            mPivot_point.setY(y);
+////
+////            repaint();
+////        }
+////
+////    }
+//
+////    @Override
+////    public void mouseMoved(MouseEvent e) {
+////        int x = e.getX();
+////        int y = e.getY();
+////        if (mDraw_pivot) {
+////            mPivot_point.setX(x);
+////            mPivot_point.setY(y);
+////
+////            repaint();
+////        }
+////        actionsGui();
+////    }
 //
 //    @Override
 //    public void mouseClicked(MouseEvent e) {
 //        // TODO Auto-generated method stub
+//    }
+//
+//    @Override
+//    public void mousePressed(MouseEvent e) {
+//
+//    }
+//
+//    @Override
+//    public void mouseReleased(MouseEvent e) {
+//
 //    }
 //
 //    @Override
@@ -260,193 +176,65 @@
 //        // TODO Auto-generated method stub
 //    }
 //
-//    @Override
-//    public void mousePressed(MouseEvent e) {
-//        int x = e.getX();
-//        int y = e.getY();
-//        Point3D tmp = new Point3D(x, y);
-//        this.mPivot_point = tmp;
-//        int key;
-//        if (this.gra != null) {
-//            key = this.gra.nodeSize() + 1;
-//        } else {
-//            key = 0;
-//        }
-//        nodeData nd = new nodeData(tmp, key, 0.0, "", 0);
-//        this.gra.addNode(nd);
-//        int min_dist = (int) (kRADIUS * 1.5);
-//        double best_dist = 1000000;
-//        for (Point3D p : points) {
-//            double dist = tmp.distance3D(p);
-//            if (dist < min_dist && dist < best_dist) {
-//                mPivot_point = p;
-//                best_dist = dist;
-//                mMoving_point = true;
-//            }
-//        }
-//
-//        if (mPivot_point == null) {
-//            mPivot_point = new Point3D(x, y);
-//        } else {
-//            if (isExist(tmp)) {
-//                mPivot_point = tmp;
-//                //      points.add(tmp);
-//                int sr = this.gra.nodeSize() - 1;
-//                int de = this.lastKey;
-//                double dist = this.gra.getNode(sr).getLocation().distance3D(tmp);
-//                gra.connect(sr, de, dist);
-//            }
-//        }
-//
-//        mDraw_pivot = true;
-//        repaint();
-//
-//
-//    }
-//
-//    @Override
-//    public void mouseReleased(MouseEvent e) {
-//        if (!mMoving_point && !isExist(mPivot_point)) {
-//            points.add(new Point3D(mPivot_point));
-//            repaint();
-//        }
-//        mMoving_point = false;
-//        mPivot_point = null;
-//        mDraw_pivot = false;
-//    }
-//
-//    private void shortPathLeng() {                           //shortest path length execution
-//        this.ga.init(this.gra);
-//        JFrame f = new JFrame("Shortest Path Dist");
-//        String src = JOptionPane.showInputDialog(f, "Enter src: ");
-//        String dest = JOptionPane.showInputDialog(f, "Enter dest: ");
-//        if (src != null && dest != null) {
-//            double answer = this.ga.shortestPathDist(Integer.parseInt(src), Integer.parseInt(dest));
-//            if(answer<0){JOptionPane.showMessageDialog(f, "Error there is no path, or no kind of vertices in graph");}
-//            else{JOptionPane.showMessageDialog(f, "The shortest dist between " + src + " and " + dest + " is: " + answer);}
-//            f.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//        }
-//        initComponents();
-//    }
-//
-//    private void TSPgui() {                                 //TSP between two stops
-//        try {
-//            this.ga.init(this.gra);
-//            JFrame f = new JFrame("Shortest Path through the selected ");
-//            String sto = JOptionPane.showInputDialog(f, "Enter stop: ");
-//            int stop = Integer.parseInt(sto);
-//            List<Integer> lnd = new ArrayList<>();
-//            lnd.add(stop);
-//            boolean flag = true;
-//            while (flag) {
-//                sto = JOptionPane.showInputDialog(f, "Enter stops: \nExit type 'end'");
-//                if (sto.equals("end")){
-//                    sto.toLowerCase();
-//                    break;
-//                }
-//                stop = Integer.parseInt(sto);
-//                lnd.add(stop);
-//
-//            }
-//            if (lnd.get(0) != null && lnd.get(lnd.size() - 1) != null) {
-//                List<node_data> answer = this.ga.TSP(lnd);
-//                Iterator<node_data> it = answer.iterator();
-//                StringBuilder path = new StringBuilder();
-//                while (it.hasNext()) {
-//                    path.append("->");
-//                    path.append(it.next().getKey());
-//                }
-//                JOptionPane.showMessageDialog(f, "The TSP  soultion between " + answer.get(0).getKey() + " and " + answer.get(answer.size()-1).getKey() + " is: " + path);
-//                f.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            System.out.println("There is no route between the two");
-//        }
+////    @Override
+////    public void mousePressed(MouseEvent e) {
+////        int x = e.getX();
+////        int y = e.getY();
+////        Point3D tmp = new Point3D(x, y);
+////        this.mPivot_point = tmp;
+////        int key;
+////        if (this.gra != null) {
+////            key = this.gra.nodeSize() + 1;
+////        } else {
+////            key = 0;
+////        }
+////        nodeData nd = new nodeData(tmp, key, 0.0, "", 0);
+////        this.gra.addNode(nd);
+////        int min_dist = (int) (kRADIUS * 1.5);
+////        double best_dist = 1000000;
+////        for (Point3D p : points) {
+////            double dist = tmp.distance3D(p);
+////            if (dist < min_dist && dist < best_dist) {
+////                mPivot_point = p;
+////                best_dist = dist;
+////                mMoving_point = true;
+////            }
+////        }
+////
+////        if (mPivot_point == null) {
+////            mPivot_point = new Point3D(x, y);
+////        } else {
+////            if (isExist(tmp)) {
+////                mPivot_point = tmp;
+////                //      points.add(tmp);
+////                int sr = this.gra.nodeSize() - 1;
+////                int de = this.lastKey;
+////                double dist = this.gra.getNode(sr).getLocation().distance3D(tmp);
+////                gra.connect(sr, de, dist);
+////            }
+////        }
+////
+////        mDraw_pivot = true;
+////        repaint();
+////
+////
+////    }
+////
+////    @Override
+////    public void mouseReleased(MouseEvent e) {
+////        if (!mMoving_point && !isExist(mPivot_point)) {
+////            points.add(new Point3D(mPivot_point));
+////            repaint();
+////        }
+////        mMoving_point = false;
+////        mPivot_point = null;
+////        mDraw_pivot = false;
+////    }
 //
 //
-//        initComponents();
-//    }
 //
-//    private void shortPathList() {                                          //shortest path list in between two stops
-//        this.ga.init(this.gra);
-//        JFrame f = new JFrame("Shortest Path through the selected ");
-//        String src = JOptionPane.showInputDialog(f, "Enter src: ");
-//        String dest = JOptionPane.showInputDialog(f, "Enter dest: ");
-//        try {
-//            if (src != null && dest != null) {
-//                List<node_data> answer = this.ga.shortestPath(Integer.parseInt(src), Integer.parseInt(dest));
-//                Iterator<node_data> it = answer.iterator();
-//                StringBuilder path = new StringBuilder();
-//                while (it.hasNext()) {
-//                    path.append("->");
-//                    path.append(it.next().getKey());
-//                }
-//                JOptionPane.showMessageDialog(f, "The shortest path between " + src + " and " + dest + " is: " + path);
-//                f.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//            }
-//        } catch (Exception ex) {
-//            System.out.println("There is no route between the two");
-//            ex.printStackTrace();
 //
-//        }
-//        initComponents();
-//    }
 //
-//    public void readFileDialog() {                                      //load graph from file
-//        FileDialog fd = new FileDialog(this, "Open text file", FileDialog.LOAD);
-//        fd.setFile("*.txt");
-//        fd.setDirectory("C:\\");
-//        fd.setFilenameFilter((dir, name) -> name.endsWith(".txt"));
-//        fd.setVisible(true);
-//        String fileName = fd.getFile();
-//        //      DGraph dg;
-//        try {
-//            FileInputStream file = new FileInputStream(fileName);
-//            ObjectInputStream in = new ObjectInputStream(file);
-//
-//            this.gra = (graph) in.readObject();
-//            ga.init(gra);
-//            repaint();
-//            in.close();
-//            file.close();
-//
-//            System.out.println("Object has been deserialized");
-//
-//        } catch (IOException | ClassNotFoundException ex) {
-//            System.out.print("Error reading file " + ex);
-//            System.exit(2);
-//        }catch(Exception ex){
-//            System.out.println("No file was loaded");
-//        }
-//    }
-//
-//    public void writeFileDialog() {                                                   //write the graph into a file using serializable
-//        FileDialog fd = new FileDialog(this, "Save the text file", FileDialog.SAVE);
-//        fd.setFile("*.txt");
-//        fd.setFilenameFilter((dir, name) -> name.endsWith(".txt"));
-//        fd.setVisible(true);
-//        String fileName = fd.getFile();
-//        graph g = this.gra;
-//        try {
-//            FileOutputStream file = new FileOutputStream(fileName);
-//            ObjectOutputStream out = new ObjectOutputStream(file);
-//            out.writeObject(g);
-//
-//            file.close();
-//            out.close();
-//
-//        } catch (IOException ex) {
-//            System.out.print("Error writing file  " + ex);
-//            System.exit(2);
-//        } catch (NullPointerException ex) {
-//            JFrame f = new JFrame();
-//            JOptionPane.showMessageDialog(f, "The graph was saved");
-//            f.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//            System.exit(-1);
-//        }
-//
-//    }
 //
 //    public void paint(Graphics g) {                                 //swing implementation of paint method
 //
@@ -457,7 +245,7 @@
 //        int i = 0;
 //        while (it.hasNext()) {
 //            node_data nd = it.next();
-//            Point3D p = nd.getLocation();
+//            Point3D p = (Point3D)nd.getLocation();
 //
 //
 //            g.setColor(Color.BLUE);
@@ -469,8 +257,8 @@
 //            Iterator<edge_data> it1 = this.gra.getE(nd.getKey()).iterator();
 //            while (it1.hasNext()) {
 //                edge_data ed = it1.next();
-//                Point3D psrc = this.gra.getNode(ed.getSrc()).getLocation();
-//                Point3D pdest = this.gra.getNode(ed.getDest()).getLocation();
+//                Point3D psrc =(Point3D) this.gra.getNode(ed.getSrc()).getLocation();
+//                Point3D pdest = (Point3D) this.gra.getNode(ed.getDest()).getLocation();
 //
 //                g.setColor(Color.YELLOW);
 //                g.fillOval((int) (Math.round(((psrc.x() * (0.1) + pdest.x() * (0.9)))) - kRADIUS),
@@ -479,7 +267,7 @@
 //                g.setColor(Color.RED);
 //                g.drawLine((int) pdest.x(), (int) pdest.y(), (int) psrc.x(), (int) psrc.y());
 //
-//                double dist = this.gra.getEdge(ed.getSrc(),ed.getDest()).getWeight();
+//                double dist = this.gra.getEdge(ed.getSrc(), ed.getDest()).getWeight();
 //                g.drawString(String.format("%.2f", dist),
 //                        (int) ((pdest.x() + psrc.x()) / 2),
 //                        (int) ((pdest.y() + psrc.y()) / 2));
@@ -495,7 +283,7 @@
 //                    g.setColor(Color.RED);
 //                    g.drawLine((int) p.x(), (int) p.y(), (int) prev.x(), (int) prev.y());
 //
-//                    double dist = prev.distance3D(p);
+//                    double dist = prev.distance(p);
 //                    g.drawString(String.format("%.2f", dist),
 //                            (int) ((p.x() + prev.x()) / 2),
 //                            (int) ((p.y() + prev.y()) / 2));
@@ -516,7 +304,7 @@
 //                g.drawLine((int) mPivot_point.x(), (int) mPivot_point.y(),
 //                        (int) prev.x(), (int) prev.y());
 //                g.setColor(Color.GRAY);
-//                double dist = prev.distance3D(mPivot_point);
+//                double dist = prev.distance(mPivot_point);
 //                g.drawString(String.format("%.2f", dist), (int) ((mPivot_point.x() + prev.x()) / 2), (int) ((mPivot_point.y() + prev.y()) / 2));
 //            }
 //
@@ -527,7 +315,7 @@
 //            Point3D pre = null;
 //            for (Point3D p : points) {
 //                if (pre != null && i1 != points.size()) {
-//                    wei = pre.distance3D(p);
+//                    wei = pre.distance(p);
 //                    int b = i1 - 1;
 //                    gra.connect(b, i1, wei);
 //                }
@@ -550,37 +338,81 @@
 //        }
 //        return false;
 //    }
+//
 //    public void buildGraph() {                      //generate graph
 //
 //        generate = true;
 //        for (int i = 0; i < 100; i++) {
-//            Point3D  pi = new Point3D(Math.random() * 700 + 10, Math.random() * 500 + 100, 0);
-//            nodeData ti = new nodeData(pi,i,0.0,null,0);
-//            this.gra.addNode(ti);
+//            Point3D pi = new Point3D(Math.random() * 700 , 0);
+//            node_data n = new Node(i,0,pi,0.0,null);
+//            this.gra.addNode(n);
 //        }
 //        for (int i = 0; i < 250; i++) {
-//            this.gra.connect((int)(Math.random() * 100), (int)(Math.random() * 100),(int)(Math.random() * 20));
+//            this.gra.connect((int) (Math.random() * 100), (int) (Math.random() * 100), (int) (Math.random() * 20));
 //        }
 //
 //    }
-//    public void buildGraph(graph G) {                             //generate option to create graph
+//
+//    public void buildGraph(directed_weighted_graph G) {                             //generate option to create graph
 //
 //        generate = true;
 //        Iterator<node_data> it = G.getV().iterator();
-//        while(it.hasNext()) {
-//            this.points.add(it.next().getLocation());
+//        while (it.hasNext()) {
+//            this.points.add((Point3D) it.next().getLocation());
 //        }
-//        this.gra=G;
-//
-//}
-//
-//
-//    public static void main(String[] args) {
-//
-//        graphGui Menu = new graphGui();
+//        this.gra = G;
 //
 //    }
 //
+//
+//    public static void main(String[] args) {
+//        directed_weighted_graph g = new DWGraph_DS();
+//        node_data n1 = new Node(0, new Point3D(95, 130, 52));
+//        node_data n2 = new Node(1, new Point3D(89, 50, 91));
+//        node_data n3 = new Node(2, new Point3D(210, 70, 162));
+//        node_data n4 = new Node(3, new Point3D(40, 100, 60));
+//        node_data n5 = new Node(4, new Point3D(100, 200, 130));
+//        g.addNode(n1);
+//        g.addNode(n2);
+//        g.addNode(n3);
+//        g.addNode(n4);
+//        g.addNode(n5);
+//
+//
+//        g.connect(0, 4, 4);
+//        g.connect(0, 2, 2);
+//        g.connect(1, 4, 12);
+//        g.connect(4, 1, 1);
+//        g.connect(2, 1, 10);
+//        g.connect(3, 2, 8);
+//
+//        List<Agent> agents = new ArrayList<>();
+//        agents.add(new Agent(0,new Point3D(97,140,50)));
+//
+//        List<Pokemon> pokemons = new ArrayList<>();
+//        pokemons.add(new Pokemon(new Point3D(120,69,50)));
+//        pokemons.add(new Pokemon(new Point3D(56,84,50)));
+//
+//
+//        JFrame jFrame = new JFrame("My gui");
+//        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        MyGui myGui = new MyGui();
+//        jFrame.add(myGui);
+//        jFrame.setSize(700, 500);
+//        jFrame.setVisible(true);
+//
+//
+//    }
+//
+//    @Override
+//    public void mouseDragged(MouseEvent e) {
+//
+//    }
+//
+//    @Override
+//    public void mouseMoved(MouseEvent e) {
+//
+//    }
 //}
 //
 //

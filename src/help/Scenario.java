@@ -2,12 +2,8 @@ package help;
 
 import java.io.*;
 import java.util.ArrayList;
-
 import Server.Game_Server_Ex2;
 import api.*;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
-import gameClient.util.Point3D;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,6 +75,35 @@ public class Scenario {
         }
 
 
+    }
+
+    public ArrayList<Pokemon> updatePokemonsAfterMove(String fs) {
+        ArrayList<Pokemon> ans = new ArrayList<>();
+        try {
+            JSONObject ttt = new JSONObject(fs);
+            JSONArray ags = ttt.getJSONArray("Pokemons");
+            for(int i=0;i<ags.length();i++) {
+                JSONObject pp = ags.getJSONObject(i);
+                var f = new Pokemon(pp.toString());
+                ans.add(f);
+            }
+        }
+        catch (JSONException e) {e.printStackTrace();}
+        return ans;
+    }
+
+    public ArrayList<Agent> updateAgentsAfterMove(String s) throws JSONException {
+        ArrayList<Agent> agentsUpdate  = new ArrayList<>();
+        JSONObject agentsInfo = new JSONObject(s);
+        JSONArray agentsArray = agentsInfo.getJSONArray("Agents");
+
+        for (int i = 0; i < agentsArray.length(); i++) {
+            JSONObject agentObject = agentsArray.getJSONObject(i);
+            Agent agent = new Agent(agentObject.toString());
+            agentsUpdate.add(agent);
+        }
+
+        return agentsUpdate;
     }
 
     public ArrayList<Agent> getAgentsList() {

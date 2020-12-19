@@ -5,9 +5,12 @@ import api.edge_data;
 import api.geo_location;
 import api.node_data;
 
+import gameClient.util.Point3D;
 import gameClient.util.Range;
+import gameClient.util.Range2D;
 import help.Agent;
 import help.Pokemon;
+import help.Scenario;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,9 +18,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class MyGui extends JPanel {
+public class MyGui extends JFrame {
 
     directed_weighted_graph graph;
     List<Agent> agents;
@@ -25,164 +30,143 @@ public class MyGui extends JPanel {
     private final Range ry;
     private final Range rx;
     private final Range rz;
+    private gameClient.util.Range2Range _w2f;
+    private Scenario scenario;
+
+
     private final int kRADIUS = 5;
 
 
-    public MyGui(directed_weighted_graph graph, List<Agent> agents, List<Pokemon> pokemons) {
-        this.pokemons = pokemons;
-        this.agents = agents;
-        this.graph = graph;
+    public MyGui(Scenario scenario) {
+        this.scenario = scenario;
+        this.pokemons = scenario.getPokemonsList();
+        this.agents = scenario.getAgentsList();
+        this.graph = scenario.getGraph();
         this.ry = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
         this.rx = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
         this.rz = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
     }
 
-    //
-//    /**
-//     * coordinate to be scaled to x range
-//     */
-//
+
+    public void updateAgents(List<Agent> agents) {
+        this.agents = agents;
+    }
+
+    public void updatePokemons(ArrayList<Pokemon> pokemons) {
+        this.pokemons = pokemons;
+    }
+
+
+    private void updateFrame() {
+        Range rx = new Range(20, this.getWidth() - 20);
+        Range ry = new Range(this.getHeight() - 10, 150);
+        Range2D frame = new Range2D(rx, ry);
+        directed_weighted_graph g = scenario.getGraph();
+        _w2f = Arena.w2f(g, frame);
+    }
+
+
     public double rangeX(double d) {
         double outX = (d - rx.get_min()) / (rx.get_max() - rx.get_min());
         double x = 100 * (12 * outX + 1);
         return x;
     }
 
-    //
-//    /**
-//     * coordinate to be scaled to y range
-//     */
+
     public double rangeY(double d) {
         double outY = (d - ry.get_min()) / (ry.get_max() - ry.get_min());
         double y = 400 * (1 - outY) + 100;
         return y;
     }
-//
-//    /**
-//     * Double buffer for the paint function
-//     */
-//    @Override
-//    public void paint(Graphics g) {
-//        Image img = createImage(1300, 700);
-//        Graphics gImg = img.getGraphics();
-//        paintComponents(gImg);
-//        g.drawImage(img, 0, 0, this);
-//
-//    }
 
-
-    public void paintComponent(Graphics g) {
-
-
-        for (node_data node : graph.getV()) {
-            geo_location nodeLocation = node.getLocation();
-
-            g.setColor(Color.BLUE);
-
-            g.fillOval((int) nodeLocation.x(), (int) nodeLocation.y(),
-                    2 * kRADIUS, 2 * kRADIUS);
-            g.setColor(Color.BLACK);
-            g.drawString(Integer.toString(node.getKey()), (int) (rangeX(nodeLocation.x())), -10 + (int) (rangeY(nodeLocation.y())));
-//            path.put((Point3D) nodeLocation, node.getKey());
-
-            for (edge_data edge : this.graph.getE(node.getKey())) {
-                geo_location dest_location = this.graph.getNode(edge.getDest()).getLocation();
-
-                g.setColor(Color.blue);
-                g.fillOval((int) dest_location.x(), (int) dest_location.y(),
-                        2 * kRADIUS, 2 * kRADIUS);
-
-                g.setColor(Color.RED);
-                g.drawLine((int) nodeLocation.x(), (int) nodeLocation.y(), (int) dest_location.x(), (int) dest_location.y());
-
-//                double edgeWeight = edge.getWeight();
-//                g.drawString(String.format("%.2f", edgeWeight), (int) (nodeLocation.x() + dest_location.x()) / 2, (int) (nodeLocation.y() + dest_location.y()) / 2);
-
-
-            }
-
-
-        }
-
-/**
- *
- *   print agents
- */
-        for (Agent agent : agents) {
-
-            int id = agent.getId();
-
-            BufferedImage image = null;
-            try {
-                image = ImageIO.read(new File("agent.png"));
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-            Image newRob = image != null ? image.getScaledInstance(20, 20, Image.SCALE_DEFAULT) : null;
-            g.drawImage(newRob, (int) agent.getPos().x(), (int) agent.getPos().y(), null);
-
-        }
-        /**
-         //         *
-         //         *   print pokemons
-         //         */
-        for (Pokemon pokemon : pokemons) {
-
-            BufferedImage image = null;
-            try {
-                image = ImageIO.read(new File("pokemon.png"));
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-            Image newPokemon = pokemon != null ? image.getScaledInstance(20, 20, Image.SCALE_DEFAULT) : null;
-            g.drawImage(newPokemon, (int) pokemon.getPos().x(), (int) pokemon.getPos().y(), null);
-
-        }
-//
-//
-///**
-// * print seconds left till game ends
-// */
-//        try {
-//            if (Auto) {
-//                String time = "Time till game Over: " + RunGame.scenario.game.timeToEnd() / 1000 + "";
-//                g.drawString(time, 650, 75);
-//            }
-//            if (Manu) {
-//                String time = "Time till game Over: " + s.game.timeToEnd() / 1000 + "";
-//                g.drawString(time, 650, 75);
-//            }
-//            /**
-//             *   print game score
-//             */
-//            if (EndAuto) {
-//                String end = "game Over: " + RunGame.scenario.game.toString();
-//                g.drawString(end, 450, 50);
-//            }
-//            if (EndManu) {
-//                String end = "game Over: " + s.game.toString();
-//                g.drawString(end, 450, 50);
-//            }
-//        } catch (
-//                Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//    }
-
-    }
 
     public void paint(Graphics g) {
         int w = this.getWidth();
         int h = this.getHeight();
         g.clearRect(0, 0, w, h);
-        paintComponent(g);
-        //	updateFrame();
-//        drawPokemons(g);
-//        drawGraph(g);
-//        drawAgants(g);
-//        drawInfo(g);
+        updateFrame();
+
+        drawPokemons(g);
+        drawGraph(g);
+        drawAgants(g);
+
     }
+
+    private void drawGraph(Graphics g) {
+        for (node_data n : graph.getV()) {
+            g.setColor(Color.blue);
+            drawNode(n, 5, g);
+            for (edge_data e : graph.getE(n.getKey())) {
+                g.setColor(Color.gray);
+                drawEdge(e, g);
+            }
+        }
+    }
+
+    private void drawPokemons(Graphics g) {
+        if (pokemons != null) {
+
+            for (Pokemon pokemon : pokemons) {
+
+                Point3D c = pokemon.getPos();
+                int r = 10;
+
+                if (c != null) {
+
+                    BufferedImage image = null;
+                    try {
+                        image = ImageIO.read(new File("pokemon.png"));
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                    geo_location fp = this._w2f.world2frame(c);
+                    Image newPokemon = image != null ? image.getScaledInstance(30, 30, Image.SCALE_DEFAULT) : null;
+                    g.drawImage(newPokemon, (int) fp.x() - r, (int) fp.y() - r, null);
+
+                }
+            }
+        }
+    }
+
+    private void drawAgants(Graphics g) {
+        //	Iterator<OOP_Point3D> itr = rs.iterator();
+        g.setColor(Color.red);
+        int i = 0;
+        while (agents != null && i < agents.size()) {
+            geo_location c = agents.get(i).getPos();
+            int r = 8;
+            i++;
+            if (c != null) {
+                BufferedImage image = null;
+                try {
+                    image = ImageIO.read(new File("agent.png"));
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                geo_location fp = this._w2f.world2frame(c);
+                Image newRob = image != null ? image.getScaledInstance(30, 30, Image.SCALE_DEFAULT) : null;
+                g.drawImage(newRob, (int) fp.x() - r, (int) fp.y() - r, null);
+
+            }
+        }
+    }
+
+    private void drawNode(node_data n, int r, Graphics g) {
+        geo_location pos = n.getLocation();
+        geo_location fp = this._w2f.world2frame(pos);
+        g.fillOval((int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r);
+        g.drawString("" + n.getKey(), (int) fp.x(), (int) fp.y() - 4 * r);
+    }
+
+    private void drawEdge(edge_data e, Graphics g) {
+        geo_location s = graph.getNode(e.getSrc()).getLocation();
+        geo_location d = graph.getNode(e.getDest()).getLocation();
+        geo_location s0 = this._w2f.world2frame(s);
+        geo_location d0 = this._w2f.world2frame(d);
+        g.drawLine((int) s0.x(), (int) s0.y(), (int) d0.x(), (int) d0.y());
+        //	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
+    }
+
+
 }
 

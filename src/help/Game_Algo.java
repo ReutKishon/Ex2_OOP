@@ -3,7 +3,6 @@ package help;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import api.*;
 import gameClient.util.Point3D;
 import org.json.JSONArray;
@@ -135,6 +134,7 @@ public class Game_Algo {
         }
 
         return ans;
+
     }
 
 

@@ -1,14 +1,12 @@
 package help;
 
-import api.geo_location;
 import gameClient.util.Point3D;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//import utils.Point3D;
 
 /**
- * This class represents Robot on a graph from the game
+ * This class represents Agent on a graph from the game
  */
 public class Agent {
     private int id;
@@ -19,7 +17,7 @@ public class Agent {
     double speed;
 
     /**
-     * Init from json info about the Robot.
+     * Init from json info about the Agent.
      *
      * @param s
      */
@@ -41,10 +39,10 @@ public class Agent {
 
     }
 
-    public Agent(int id, Point3D pos) {
-        this.pos = pos;
-        this.id = id;
-    }
+//    public Agent(int id, Point3D pos) {
+//        this.pos = pos;
+//        this.id = id;
+//    }
 
     /**
      * @return the src of this Robot.
