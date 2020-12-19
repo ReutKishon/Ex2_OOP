@@ -2,8 +2,11 @@ package help;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import Server.Game_Server_Ex2;
 import api.*;
+import gameClient.util.Point3D;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,9 +20,9 @@ public class Scenario {
     public directed_weighted_graph graph;
     public dw_graph_algorithms graph_algo;
     public game_service game;
-    public ArrayList<Agent> agentsList = new ArrayList<Agent>();
+    public HashMap<Integer, Agent> agents;
     public ArrayList<Pokemon> pokemonsList = new ArrayList<Pokemon>();
-    public int num;
+
 //    public static final int ID =206226706;
 
     /**
@@ -31,7 +34,6 @@ public class Scenario {
 
     public Scenario(int scenario_num) throws JSONException, IOException {
 //        Game_Server.login(ID);
-        this.num = scenario_num;
         this.game = Game_Server_Ex2.getServer(scenario_num);
         String graphJson = game.getGraph();
 
@@ -45,15 +47,17 @@ public class Scenario {
         graph = graph_algo.getGraph();
         String info = game.toString();
 
-        JSONObject object = new JSONObject(game.getPokemons());
-        JSONArray getArray = object.getJSONArray("Pokemons");
-
-        for (int i = 0; i < getArray.length(); i++) {
-            JSONObject pokemonObject = getArray.getJSONObject(i);
-            Pokemon pokemon = new Pokemon(pokemonObject.toString(), this.graph);
-            pokemonsList.add(pokemon);
+        try {
+            JSONObject ttt = new JSONObject(game.getPokemons());
+            JSONArray ags = ttt.getJSONArray("Pokemons");
+            for (int i = 0; i < ags.length(); i++) {
+                JSONObject pp = ags.getJSONObject(i);
+                var f = new Pokemon(pp.toString(), graph);
+                pokemonsList.add(f);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
 
         JSONObject line;
         try {
@@ -61,53 +65,61 @@ public class Scenario {
             JSONObject gameServerObject = line.getJSONObject("GameServer");
             int agentsNum = gameServerObject.getInt("agents");
             Game_Algo.addAgentNearPokemon(agentsNum, pokemonsList, game, graph);
-        } catch (JSONException e) {
+        } catch (
+                JSONException e) {
             e.printStackTrace();
         }
-
+        agents = new HashMap<>();
         JSONObject agentsInfo = new JSONObject(game.getAgents());
         JSONArray agentsArray = agentsInfo.getJSONArray("Agents");
 
         for (int i = 0; i < agentsArray.length(); i++) {
             JSONObject agentObject = agentsArray.getJSONObject(i);
             Agent agent = new Agent(agentObject.toString());
-            agentsList.add(agent);
+            this.agents.put(agent.getId(), agent);
         }
-
 
     }
 
-    public ArrayList<Pokemon> updatePokemonsAfterMove(String fs) {
-        ArrayList<Pokemon> ans = new ArrayList<>();
+    public void updatePokemonsAfterMove(String pokemonsJson) {
+        this.pokemonsList.clear();
         try {
-            JSONObject ttt = new JSONObject(fs);
-            JSONArray ags = ttt.getJSONArray("Pokemons");
-            for(int i=0;i<ags.length();i++) {
-                JSONObject pp = ags.getJSONObject(i);
-                var f = new Pokemon(pp.toString());
-                ans.add(f);
+            JSONObject pokemonsObject = new JSONObject(pokemonsJson);
+            JSONArray pokemonsJsonArray = pokemonsObject.getJSONArray("Pokemons");
+            for (int i = 0; i < pokemonsJsonArray.length(); i++) {
+                JSONObject pokemonObject = pokemonsJsonArray.getJSONObject(i);
+                Pokemon p = new Pokemon(pokemonObject.toString(), graph);
+                pokemonsList.add(p);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        catch (JSONException e) {e.printStackTrace();}
-        return ans;
     }
 
-    public ArrayList<Agent> updateAgentsAfterMove(String s) throws JSONException {
-        ArrayList<Agent> agentsUpdate  = new ArrayList<>();
+    public void updateAgentsAfterMove(String s) throws JSONException {
         JSONObject agentsInfo = new JSONObject(s);
         JSONArray agentsArray = agentsInfo.getJSONArray("Agents");
 
         for (int i = 0; i < agentsArray.length(); i++) {
             JSONObject agentObject = agentsArray.getJSONObject(i);
-            Agent agent = new Agent(agentObject.toString());
-            agentsUpdate.add(agent);
+            JSONObject agentInfo = agentObject.getJSONObject("Agent");
+            int id = agentInfo.getInt("id");
+            String pos = agentInfo.getString("pos");
+            int currentSrc = agentInfo.getInt("src");
+            int currentDest = agentInfo.getInt("dest");
+
+            this.agents.get(id).setPos(new Point3D(pos));
+            this.agents.get(id).setCurrentSrc(currentSrc);
+            this.agents.get(id).setCurrentDest(currentDest);
+
+
         }
 
-        return agentsUpdate;
     }
 
-    public ArrayList<Agent> getAgentsList() {
-        return agentsList;
+
+    public HashMap<Integer, Agent> getAgents() {
+        return agents;
     }
 
     public directed_weighted_graph getGraph() {

@@ -1,11 +1,9 @@
 package help;
 
-import api.directed_weighted_graph;
 import api.game_service;
 import gameClient.MyGui;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+
 import java.io.IOException;
 
 
@@ -37,45 +35,44 @@ public class GameEntryPoint implements Runnable {
 
     }
 
-    private static void setGamesNextAgentsDestination(game_service game, String moveJson) throws JSONException {
-        JSONObject object = new JSONObject(moveJson);
-        JSONArray getArray = object.getJSONArray("Agents");
-
-        for (int i = 0; i < getArray.length(); i++) {
-            JSONObject jsonObject = getArray.getJSONObject(i);
-
-            try {
-                JSONObject agentObject = jsonObject.getJSONObject("Agent");
-                int id = agentObject.getInt("id");
-                int src = agentObject.getInt("src");
-                int dest = agentObject.getInt("dest");
+    private static void setGamesNextAgentsDestination(game_service game) throws JSONException {
+        int dest;
+        for (Agent agent : scenario.getAgents().values()) {
 
 
-                if (dest == -1) {
-                    dest = Game_Algo.nextNode(scenario, src, id);
-                    game.chooseNextEdge(id, dest);
+            if (agent.getCurrentSrc() == agent.getPokemonEdgeSrc()) {
+                dest = agent.getPokemonEdgeDest();
+                game.chooseNextEdge(agent.getId(), dest);
+            } else if (agent.getCurrentSrc() == agent.getPokemonEdgeDest() || agent.getPokemonEdgeDest() == -1) {
+                //set final dest and route to close pokemon
+                if (agent.getPokemonEdgeDest() != -1) {
+                    agent.getPokemonEdge().setTag(0);
                 }
+                Game_Algo.setFinalDestAndRoute(scenario, agent.getCurrentSrc(), agent);
+                dest = Game_Algo.nextNode(scenario, agent.getCurrentSrc(), agent.getId());
+                game.chooseNextEdge(agent.getId(), dest);
 
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } else if (agent.getCurrentDest() == -1) {
+                dest = Game_Algo.nextNode(scenario, agent.getCurrentSrc(), agent.getId());
+                game.chooseNextEdge(agent.getId(), dest);
             }
 
+
         }
+
     }
 
 
-    private static void moveRobots(game_service game, directed_weighted_graph gg) throws JSONException {
+    private static void moveRobots(game_service game) throws JSONException {
 
-        var moveJson = game.move();
-        var pokemondsJson = game.getPokemons();
-        setGamesNextAgentsDestination(game, moveJson);
+        String moveJson = game.move();
+        String pokemonsJson = game.getPokemons();
 
-        var agents = scenario.updateAgentsAfterMove(moveJson);
-        var pokemons = scenario.updatePokemonsAfterMove(pokemondsJson);
+        scenario.updateAgentsAfterMove(moveJson);
+        scenario.updatePokemonsAfterMove(pokemonsJson);
 
-        _win.updateAgents(agents);
-        _win.updatePokemons(pokemons);
+        setGamesNextAgentsDestination(game);
+
 
     }
 
@@ -84,13 +81,13 @@ public class GameEntryPoint implements Runnable {
     public void run() {
 
         _win.show();
-
+        boolean start = true;
         Thread startGame = new Thread(() -> {
             scenario.game.startGame();
             int count = 0;
             while (scenario.game.isRunning()) {
                 try {
-                    moveRobots(scenario.game, scenario.graph);
+                    moveRobots(scenario.game);
                     _win.repaint();
                     count++;
                     Thread.sleep(DT);

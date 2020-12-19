@@ -22,36 +22,6 @@ public class DWGraph_DS implements directed_weighted_graph {
         this.inEdges = inEdges;
     }
 
-    public void init(String s) {
-        try {
-            JSONObject g = new JSONObject(s);
-            JSONArray nodes = g.getJSONArray("Nodes");
-            JSONArray edges = g.getJSONArray("Edges");
-
-            for (int i = 0; i < nodes.length(); i++) {
-                int id = nodes.getJSONObject(i).getInt("id");
-                int tag = nodes.getJSONObject(i).getInt("tag");
-
-                String pi = nodes.getJSONObject(i).getString("pos");
-                Point3D Pi = new Point3D(pi);
-
-                Node ni = new Node(id, tag, Pi, 0.0, null);
-
-                this.addNode(ni);
-
-            }
-            for (int i = 0; i < edges.length(); i++) {
-                int sr = edges.getJSONObject(i).getInt("src");
-                int d = edges.getJSONObject(i).getInt("dest");
-                double w = edges.getJSONObject(i).getDouble("w");
-                connect(sr, d, w);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public DWGraph_DS() {
         edgesSize = 0;

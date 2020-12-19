@@ -3,9 +3,9 @@ package help;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import api.*;
 import gameClient.util.Point3D;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,7 +51,7 @@ public class Game_Algo {
      * @param pokemonInfo
      * @param graph
      */
-    public static edge_data getPokemonEdge(String pokemonInfo, directed_weighted_graph graph) throws JSONException {
+    public static edge_data getPokemonEdgeByJson(String pokemonInfo, directed_weighted_graph graph) throws JSONException {
         JSONObject infoObject = new JSONObject(pokemonInfo); //deserialize
         JSONObject pokemonObject = infoObject.getJSONObject("Pokemon");
         String posString = pokemonObject.getString("pos"); //get location
@@ -77,65 +77,85 @@ public class Game_Algo {
         return null;
     }
 
+    public static edge_data getPokemonEdge(Pokemon pokemon, directed_weighted_graph graph) throws JSONException {
+
+        //traversal all edges and checks if the the fruit is on edge
+        for (node_data node : graph.getV()) {
+            for (edge_data edge : graph.getE(node.getKey())) {
+                double disSP = node.getLocation().distance(pokemon.getPos());  // distance from src to pokemon
+                double disPD = pokemon.getPos().distance(graph.getNode(edge.getDest()).getLocation());  // distance from pokemon to dest
+                double disSD = node.getLocation().distance(graph.getNode(edge.getDest()).getLocation());    // distance from src to dest
+                if (pokemon.getType() == -1) {
+                    if (disSP + disPD >= disSD - EPS && disSP + disPD <= disSD + EPS && edge.getSrc() - edge.getDest() > 0) {
+                        return edge;
+                    }
+                } else if (pokemon.getType() == 1) {
+                    if (disSP + disPD >= disSD - EPS && disSP + disPD <= disSD + EPS && edge.getSrc() - edge.getDest() < 0) {
+                        return edge;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public static int nextNode(Scenario scenario, int src, int id) throws JSONException {
+        Agent agent = scenario.getAgents().get(id);
+        List<node_data> agentRouteToPokemon = agent.getRoute();
+
+        for (int i = 0; i < agentRouteToPokemon.size(); i++) {
+            if (agentRouteToPokemon.get(i).getKey() == src) {
+                if ((i + 1) < agentRouteToPokemon.size())
+                    return agentRouteToPokemon.get(i + 1).getKey();
+            }
+        }
+
+
+        return -1;
+    }
+
+
     /**
      * The function returns the next node on the path to a pokemon.
      *
      * @param src
      * @param scenario
      */
-    public static int nextNode(Scenario scenario, int src, int id) throws JSONException {
-        int ans = -1;
-        int dest = 0;
-        int tempDest = 0;
-        double minDist = -1;
-        double tempDist;
-        edge_data resEdge = null;
+    public static void setFinalDestAndRoute(Scenario scenario, int src, Agent agent) throws JSONException {
+        int finalDestEdgeNode = -1;
+        int finalSrcEdgeNode = -1;
+        double minDistance = Integer.MAX_VALUE;
+        double tempDistance;
+        edge_data resPokemonEdge = null;
 
-        JSONObject object = new JSONObject(scenario.game.getPokemons());
-        JSONArray getArray = object.getJSONArray("Pokemons");
-
-        for (int i = 0; i < getArray.length(); i++) {
-            JSONObject pokemonObject = getArray.getJSONObject(i);
-
-            try {
-                edge_data pokemonEdge = getPokemonEdge(pokemonObject.toString(), scenario.graph);
-                if (pokemonEdge != null && (pokemonEdge.getTag() == -1 || pokemonEdge.getTag() == id)) {       // if else robot not go to this fruit.
-                    if (minDist == -1) {         //get to min edge
-                        minDist = scenario.graph_algo.shortestPathDist(src, scenario.graph.getNode(pokemonEdge.getSrc()).getKey());
-                        dest = scenario.graph.getNode(pokemonEdge.getSrc()).getKey();
-                        resEdge = pokemonEdge;
-                    } else {
-                        tempDist = scenario.graph_algo.shortestPathDist(src, scenario.graph.getNode(pokemonEdge.getSrc()).getKey());
-                        tempDest = scenario.graph.getNode(pokemonEdge.getSrc()).getKey();
-                        if (tempDist < minDist) {
-                            minDist = tempDist;
-                            dest = tempDest;
-                            resEdge = pokemonEdge;
-                        }
-                    }
+        for (Pokemon pokemon : scenario.getPokemonsList()) {
+            edge_data pokemonEdge = getPokemonEdge(pokemon, scenario.graph);
+            if (pokemonEdge != null && (pokemonEdge.getTag() != -1)) {       // if else robot not go to this fruit.
+                //get min edge
+                tempDistance = scenario.graph_algo.shortestPathDist(src, scenario.graph.getNode(pokemonEdge.getSrc()).getKey());
+                if (tempDistance < minDistance) {
+                    minDistance = tempDistance;
+                    resPokemonEdge = pokemonEdge;
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
-        if (resEdge != null) {
-            resEdge.setTag(id);
-        }
-        List<node_data> shortestPath = scenario.graph_algo.shortestPath(src, dest);  // insert the path to list
-        if (shortestPath != null && shortestPath.size() > 1) {
-            ans = shortestPath.get(1).getKey();       // the next step in path to fruit
-            scenario.graph.getEdge(src, shortestPath.get(1).getKey()).setTag(-1);
-        }
-        if (shortestPath != null && shortestPath.size() == 1) {       //if the robot is in the  src edge fruit
-            if (resEdge != null) {
-                resEdge.setTag(-1);
-                ans = resEdge.getDest();
+        if (resPokemonEdge != null) {
+
+            List<node_data> shortestPath = scenario.graph_algo.shortestPath(src, resPokemonEdge.getSrc());  // insert the path to list
+
+            agent.setPokemonEdgeDest(resPokemonEdge.getDest());
+            agent.setPokemonEdgeSrc(resPokemonEdge.getSrc());
+            if (shortestPath != null) {
+                agent.setRoute(shortestPath);
             }
+            resPokemonEdge.setTag(-1);
+            agent.setPokemonEdge(resPokemonEdge);
+
+
         }
-
-        return ans;
-
     }
 
-
 }
+
+

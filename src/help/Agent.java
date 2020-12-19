@@ -1,8 +1,13 @@
 package help;
 
+import api.edge_data;
+import api.node_data;
 import gameClient.util.Point3D;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -10,9 +15,13 @@ import org.json.JSONObject;
  */
 public class Agent {
     private int id;
-    private int src;
-    private int dest;
+    private int currentSrc;
+    private int currentDest;
+    private int pokemonEdgeDest;
+    private int pokemonEdgeSrc;
+    List<node_data> route;
     private Point3D pos;
+    private edge_data pokemonEdge;
     double value;
     double speed;
 
@@ -28,52 +37,49 @@ public class Agent {
             String pos = agentInfo.getString("pos"); //get location
             this.pos = new Point3D(pos);
             this.id = agentInfo.getInt("id");//get id;
-            this.src = agentInfo.getInt("src");// get src
-            this.dest = agentInfo.getInt("dest");// get dest
+            this.currentSrc = agentInfo.getInt("src");// get src
+            this.currentDest = agentInfo.getInt("dest");// get dest
             this.value = agentInfo.getDouble("value"); // get value
             this.speed = agentInfo.getDouble("speed"); // get speed
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        this.route = new ArrayList<>();
+        this.pokemonEdgeDest = -1;
 
     }
 
-//    public Agent(int id, Point3D pos) {
-//        this.pos = pos;
-//        this.id = id;
-//    }
 
     /**
      * @return the src of this Robot.
      */
-    public int getSrc() {
-        return src;
+    public int getCurrentSrc() {
+        return currentSrc;
     }
 
     /**
      * Allow setting the src edge of this Robot.
      *
-     * @param src
+     * @param currentSrc
      */
-    public void setSrc(int src) {
-        this.src = src;
+    public void setCurrentSrc(int currentSrc) {
+        this.currentSrc = currentSrc;
     }
 
     /**
      * @return the destination edge  of this Robot.
      */
-    public int getDest() {
-        return dest;
+    public int getCurrentDest() {
+        return currentDest;
     }
 
     /**
      * Allow setting the  destination edge  of this Robot.
      *
-     * @param dest
+     * @param currentDest
      */
-    public void setDest(int dest) {
-        this.dest = dest;
+    public void setCurrentDest(int currentDest) {
+        this.currentDest = currentDest;
     }
 
     /**
@@ -94,19 +100,36 @@ public class Agent {
         this.pos = pos;
     }
 
-    public double getValue() {
-        return value;
+    public List<node_data> getRoute() {
+        return this.route;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setRoute(List<node_data> route) {
+        this.route = route;
     }
 
-    public double getSpeed() {
-        return speed;
+
+    public int getPokemonEdgeDest() {
+        return pokemonEdgeDest;
     }
 
-    public void setSpeed(double speed) {
-        this.speed = speed;
+    public void setPokemonEdgeDest(int pokemonEdgeDest) {
+        this.pokemonEdgeDest = pokemonEdgeDest;
+    }
+
+    public edge_data getPokemonEdge() {
+        return pokemonEdge;
+    }
+
+    public void setPokemonEdge(edge_data pokemonEdge) {
+        this.pokemonEdge = pokemonEdge;
+    }
+
+    public int getPokemonEdgeSrc() {
+        return pokemonEdgeSrc;
+    }
+
+    public void setPokemonEdgeSrc(int pokemonEdgeSrc) {
+        this.pokemonEdgeSrc = pokemonEdgeSrc;
     }
 }

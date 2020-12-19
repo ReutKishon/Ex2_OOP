@@ -19,19 +19,18 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 
 public class MyGui extends JFrame {
 
     directed_weighted_graph graph;
-    List<Agent> agents;
-    List<Pokemon> pokemons;
     private final Range ry;
     private final Range rx;
     private final Range rz;
     private gameClient.util.Range2Range _w2f;
-    private Scenario scenario;
+    private final Scenario scenario;
+    ArrayList<Pokemon> pokemons;
 
 
     private final int kRADIUS = 5;
@@ -40,16 +39,10 @@ public class MyGui extends JFrame {
     public MyGui(Scenario scenario) {
         this.scenario = scenario;
         this.pokemons = scenario.getPokemonsList();
-        this.agents = scenario.getAgentsList();
         this.graph = scenario.getGraph();
         this.ry = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
         this.rx = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
         this.rz = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
-    }
-
-
-    public void updateAgents(List<Agent> agents) {
-        this.agents = agents;
     }
 
     public void updatePokemons(ArrayList<Pokemon> pokemons) {
@@ -104,9 +97,9 @@ public class MyGui extends JFrame {
     }
 
     private void drawPokemons(Graphics g) {
-        if (pokemons != null) {
+        if (scenario.pokemonsList != null) {
 
-            for (Pokemon pokemon : pokemons) {
+            for (Pokemon pokemon : scenario.pokemonsList) {
 
                 Point3D c = pokemon.getPos();
                 int r = 10;
@@ -132,8 +125,8 @@ public class MyGui extends JFrame {
         //	Iterator<OOP_Point3D> itr = rs.iterator();
         g.setColor(Color.red);
         int i = 0;
-        while (agents != null && i < agents.size()) {
-            geo_location c = agents.get(i).getPos();
+        while (scenario.getAgents() != null && i < scenario.getAgents().size()) {
+            geo_location c = scenario.getAgents().get(i).getPos();
             int r = 8;
             i++;
             if (c != null) {
