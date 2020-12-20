@@ -4,6 +4,7 @@ import api.game_service;
 import gameClient.MyGui;
 import org.json.JSONException;
 
+import javax.swing.*;
 import java.io.IOException;
 
 
@@ -66,6 +67,7 @@ public class GameEntryPoint implements Runnable {
     private static void moveRobots(game_service game) throws JSONException {
 
         String moveJson = game.move();
+
         String pokemonsJson = game.getPokemons();
 
         scenario.updateAgentsAfterMove(moveJson);

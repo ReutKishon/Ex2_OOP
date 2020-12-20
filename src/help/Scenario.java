@@ -82,18 +82,19 @@ public class Scenario {
     }
 
     public void updatePokemonsAfterMove(String pokemonsJson) {
-        this.pokemonsList.clear();
+        ArrayList<Pokemon> ans = new ArrayList<>();
         try {
             JSONObject pokemonsObject = new JSONObject(pokemonsJson);
             JSONArray pokemonsJsonArray = pokemonsObject.getJSONArray("Pokemons");
             for (int i = 0; i < pokemonsJsonArray.length(); i++) {
                 JSONObject pokemonObject = pokemonsJsonArray.getJSONObject(i);
                 Pokemon p = new Pokemon(pokemonObject.toString(), graph);
-                pokemonsList.add(p);
+                ans.add(p);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        this.pokemonsList = ans;
     }
 
     public void updateAgentsAfterMove(String s) throws JSONException {

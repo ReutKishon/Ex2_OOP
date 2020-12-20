@@ -4,9 +4,11 @@ import Server.Game_Server_Ex2;
 import api.game_service;
 import api.directed_weighted_graph;
 import api.edge_data;
+import help.Scenario;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,7 +26,8 @@ public class Ex2_Client implements Runnable {
 
     @Override
     public void run() {
-        int scenario_num = 11;
+        int scenario_num = 0;
+
         game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
         //	int id = 999;
         //	game.login(id);
@@ -114,7 +117,7 @@ public class Ex2_Client implements Runnable {
         _ar = new Arena();
         _ar.setGraph(gg);
         _ar.setPokemons(Arena.json2Pokemons(fs));
-        _win = new MyFrame("test Ex2");
+        _win = new MyFrame("Ex2");
         _win.setSize(1000, 700);
         _win.update(_ar);
 

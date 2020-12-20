@@ -37,7 +37,7 @@ public class Pokemon {
             this.pos = new Point3D(pos);
             this.type = pokenomInfo.getInt("type");//get type;
             this.value = pokenomInfo.getDouble("value");// get value
-            this.edge = Game_Algo.getPokemonEdgeByJson(s, graph);
+            this.edge = Game_Algo.updateEdge(this.pos, this.type, graph);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -79,6 +79,10 @@ public class Pokemon {
      */
     public edge_data getEdge() {
         return edge;
+    }
+
+    public void setEdge(edge_data edge) {
+        this.edge = edge;
     }
 
 }
