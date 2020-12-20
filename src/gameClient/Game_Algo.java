@@ -1,4 +1,4 @@
-package help;
+package gameClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import api.*;
-import gameClient.CL_Pokemon;
 import gameClient.util.Point3D;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,20 +102,19 @@ public class Game_Algo {
     }
 
 
-    public static int nextNode(Scenario scenario, int src, int id) throws JSONException {
-        Agent agent = scenario.getAgents().get(id);
+    public static int nextNode(Scenario scenario, Agent agent) throws JSONException {
         List<node_data> agentRouteToPokemon = agent.getRoute();
-        int edgeTag = agent.getPokemonEdge().getTag();
-        directed_weighted_graph graph = scenario.getGraph();
 
         for (int i = 0; i < agentRouteToPokemon.size(); i++) {
-            if (agentRouteToPokemon.get(i).getKey() == src) {
+            if (agentRouteToPokemon.get(i).getKey() == agent.getCurrentSrc()) {
                 if ((i + 1) < agentRouteToPokemon.size())
                     return agentRouteToPokemon.get(i + 1).getKey();
             }
         }
 
-
+        if (agent.getPokemonEdge() != null) {
+            return agent.getPokemonEdge().getDest();
+        }
         return -1;
     }
 
@@ -132,90 +130,82 @@ public class Game_Algo {
         double minDistance = Integer.MAX_VALUE;
         double tempDistance;
         edge_data resPokemonEdgeMin = null;
-
+        Pokemon pokemonResult = null;
+        scenario.updatePokemonsAfterMove(scenario.game.getPokemons());
 
 
         for (Pokemon pokemon : scenario.getPokemonsList()) {
             edge_data pokemonEdge = getPokemonEdge(pokemon, scenario.graph);
-            if (pokemonEdge != null && pokemonEdge.getTag()!=-1) {       // if else robot not go to this fruit.
+            if (pokemonEdge != null) {       // if else robot not go to this fruit.
+//                if (pokemonEdge.getDest() == src) continue;
+
                 //get min edge
                 tempDistance = scenario.graph_algo.shortestPathDist(src, scenario.graph.getNode(pokemonEdge.getSrc()).getKey());
+                if (tempDistance == -1) continue;//there is no path
                 if (tempDistance < minDistance) {
                     minDistance = tempDistance;
                     resPokemonEdgeMin = pokemonEdge;
+                    pokemonResult = pokemon;
 
                 }
             }
         }
 
 
-        if (resPokemonEdgeMin != null) {
+        if (resPokemonEdgeMin != null && pokemonResult != null) {
+            // if the distance to that pokemon is smaller then another agent , then mark this pokemon as dest.
+            if (minDistance < pokemonResult.getMin_dist()) {
+                int anotherAgent = pokemonResult.getMin_agent();
+                if (anotherAgent != agent.getId()) {
+                    setAnotherAgentDest(scenario, anotherAgent);
+                }
+                pokemonResult.setMin_dist(minDistance);
+                pokemonResult.setMin_agent(agent.getId());
+                agent.setPokemonEdge(resPokemonEdgeMin);
+                agent.setCurr_pokemon(pokemonResult);
 
-            List<node_data> shortestPath = scenario.graph_algo.shortestPath(src, resPokemonEdgeMin.getSrc());  // insert the path to list
-
-            agent.setPokemonEdgeDest(resPokemonEdgeMin.getDest());
-            agent.setPokemonEdgeSrc(resPokemonEdgeMin.getSrc());
-            if (shortestPath != null) {
+                List<node_data> shortestPath = scenario.graph_algo.shortestPath(src, resPokemonEdgeMin.getSrc());  // insert the path to list
                 agent.setRoute(shortestPath);
-            }
-            resPokemonEdgeMin.setTag(-1);
-            agent.setPokemonEdge(resPokemonEdgeMin);
 
-
-        }
-    }
-
-
-    public static edge_data updateEdge(Point3D pos, int type, directed_weighted_graph g) {
-        //	oop_edge_data ans = null;
-        Iterator<node_data> itr = g.getV().iterator();
-        while (itr.hasNext()) {
-            node_data v = itr.next();
-            Iterator<edge_data> iter = g.getE(v.getKey()).iterator();
-            while (iter.hasNext()) {
-                edge_data e = iter.next();
-                boolean f = isOnEdge(pos, e, type, g);
-                if (f) {
-                    return e;
-                }
             }
         }
-        return null;
+
+
+//            if (src == resPokemonEdgeMin.getSrc()) {
+//                List<node_data> shortestPath = scenario.graph_algo.shortestPath(src, resPokemonEdgeMin.getDest());  // insert the path to list
+//
+//                agent.setPokemonEdgeDest(resPokemonEdgeMin.getDest());
+//                agent.setPokemonEdgeSrc(resPokemonEdgeMin.getSrc());
+//                if (shortestPath != null) {
+//                    agent.setRoute(shortestPath);
+//                }
+//                resPokemonEdgeMin.setTag(-1);
+//                agent.setPokemonEdge(resPokemonEdgeMin);
+//
+//            } else {
+//
+//                List<node_data> shortestPath = scenario.graph_algo.shortestPath(src, resPokemonEdgeMin.getSrc());  // insert the path to list
+//
+//                agent.setPokemonEdgeDest(resPokemonEdgeMin.getDest());
+//                agent.setPokemonEdgeSrc(resPokemonEdgeMin.getSrc());
+//                if (shortestPath != null) {
+//                    agent.setRoute(shortestPath);
+//                }
+//                resPokemonEdgeMin.setTag(-1);
+//                agent.setPokemonEdge(resPokemonEdgeMin);
+//
+//
+//            }
+//        }
     }
 
-    private static boolean isOnEdge(geo_location p, geo_location src, geo_location dest) {
+    public static void setAnotherAgentDest(Scenario scenario, int id) {
 
-        boolean ans = false;
-        double dist = src.distance(dest);
-        double d1 = src.distance(p) + p.distance(dest);
-        if (dist > d1 - EPS2) {
-            ans = true;
-        }
-        return ans;
+        scenario.agents.get(id).setCurrentDest(-1);
+        scenario.agents.get(id).setCurr_pokemon(null);
+        scenario.agents.get(id).setPokemonEdge(null);
+
     }
-
-    private static boolean isOnEdge(geo_location p, int s, int d, directed_weighted_graph g) {
-        geo_location src = g.getNode(s).getLocation();
-        geo_location dest = g.getNode(d).getLocation();
-        return isOnEdge(p, src, dest);
-    }
-
-    private static boolean isOnEdge(geo_location p, edge_data e, int type, directed_weighted_graph g) {
-        int src = g.getNode(e.getSrc()).getKey();
-        int dest = g.getNode(e.getDest()).getKey();
-        if (type < 0 && dest > src) {
-            return false;
-        }
-        if (type > 0 && src > dest) {
-            return false;
-        }
-        return isOnEdge(p, src, dest, g);
-    }
-
-
-
-
-
 
 }
 

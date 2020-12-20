@@ -1,10 +1,8 @@
-package help;
+package gameClient;
 
 import api.directed_weighted_graph;
 import api.edge_data;
 import gameClient.util.Point3D;
-import api.DWGraph_DS;
-import api.Edge;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,11 +15,9 @@ public class Pokemon {
     private Point3D pos;
     private double value;
     private edge_data edge;
+    private int min_agent;
+    private double min_dist;
 
-
-    public Pokemon(Point3D pos) {
-        this.pos = pos;
-    }
 
     /**
      * Init from json info about the Fruit.
@@ -37,10 +33,11 @@ public class Pokemon {
             this.pos = new Point3D(pos);
             this.type = pokenomInfo.getInt("type");//get type;
             this.value = pokenomInfo.getDouble("value");// get value
-            this.edge = Game_Algo.updateEdge(this.pos, this.type, graph);
+            this.edge = Game_Algo.getPokemonEdgeByJson(s, graph);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        this.setMin_dist(Double.MAX_VALUE);
     }
 
 
@@ -85,4 +82,19 @@ public class Pokemon {
         this.edge = edge;
     }
 
+    public double getMin_dist() {
+        return min_dist;
+    }
+
+    public void setMin_dist(double mid_dist) {
+        this.min_dist = mid_dist;
+    }
+
+    public int getMin_agent() {
+        return min_agent;
+    }
+
+    public void setMin_agent(int min_agent) {
+        this.min_agent = min_agent;
+    }
 }

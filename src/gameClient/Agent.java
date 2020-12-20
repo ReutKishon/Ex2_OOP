@@ -1,5 +1,6 @@
-package help;
+package gameClient;
 
+import api.directed_weighted_graph;
 import api.edge_data;
 import api.node_data;
 import gameClient.util.Point3D;
@@ -17,13 +18,16 @@ public class Agent {
     private int id;
     private int currentSrc;
     private int currentDest;
-    private int pokemonEdgeDest;
-    private int pokemonEdgeSrc;
+    private node_data curr_node;
+//    private directed_weighted_graph _gg;
+    private Pokemon curr_pokemon;
+
     List<node_data> route;
     private Point3D pos;
     private edge_data pokemonEdge;
     double value;
     double speed;
+
 
     /**
      * Init from json info about the Agent.
@@ -45,7 +49,6 @@ public class Agent {
             e.printStackTrace();
         }
         this.route = new ArrayList<>();
-        this.pokemonEdgeDest = -1;
 
     }
 
@@ -109,13 +112,6 @@ public class Agent {
     }
 
 
-    public int getPokemonEdgeDest() {
-        return pokemonEdgeDest;
-    }
-
-    public void setPokemonEdgeDest(int pokemonEdgeDest) {
-        this.pokemonEdgeDest = pokemonEdgeDest;
-    }
 
     public edge_data getPokemonEdge() {
         return pokemonEdge;
@@ -125,11 +121,11 @@ public class Agent {
         this.pokemonEdge = pokemonEdge;
     }
 
-    public int getPokemonEdgeSrc() {
-        return pokemonEdgeSrc;
+    public Pokemon getCurr_pokemon() {
+        return curr_pokemon;
     }
 
-    public void setPokemonEdgeSrc(int pokemonEdgeSrc) {
-        this.pokemonEdgeSrc = pokemonEdgeSrc;
+    public void setCurr_pokemon(Pokemon curr_pokemon) {
+        this.curr_pokemon = curr_pokemon;
     }
 }

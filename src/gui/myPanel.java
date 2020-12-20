@@ -1,15 +1,15 @@
-package gameClient;
+package gui;
 
 import api.directed_weighted_graph;
 import api.edge_data;
 import api.geo_location;
 import api.node_data;
+import gameClient.Arena;
 import gameClient.util.Point3D;
 import gameClient.util.Range;
 import gameClient.util.Range2D;
-import help.Agent;
-import help.Pokemon;
-import help.Scenario;
+import gameClient.Pokemon;
+import gameClient.Scenario;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,9 +17,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 public class myPanel extends JPanel {
 
@@ -31,7 +29,7 @@ public class myPanel extends JPanel {
     public myPanel(Scenario scenario) {
         super();
         this.setBackground(Color.GREEN);
-        this.setBounds(600, 250, 700, 500);
+        this.setBounds(600, 600, 1000, 600);
         this.scenario = scenario;
         this.graph = scenario.getGraph();
         Range rx = new Range(20, this.getWidth() - 20);

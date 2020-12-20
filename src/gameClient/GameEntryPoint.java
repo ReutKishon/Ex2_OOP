@@ -1,10 +1,9 @@
-package help;
+package gameClient;
 
 import api.game_service;
-import gameClient.MyGui;
+import gui.MyGui;
 import org.json.JSONException;
 
-import javax.swing.*;
 import java.io.IOException;
 
 
@@ -40,21 +39,15 @@ public class GameEntryPoint implements Runnable {
         int dest;
         for (Agent agent : scenario.getAgents().values()) {
 
-
-            if (agent.getCurrentSrc() == agent.getPokemonEdgeSrc()) {
-                dest = agent.getPokemonEdgeDest();
-                game.chooseNextEdge(agent.getId(), dest);
-            } else if (agent.getCurrentSrc() == agent.getPokemonEdgeDest() || agent.getPokemonEdgeDest() == -1) {
-                //set final dest and route to close pokemon
-                if (agent.getPokemonEdgeDest() != -1) {
-                    agent.getPokemonEdge().setTag(0);
-                }
+            // agent doest not have pokemon destination
+            if (agent.getCurr_pokemon() == null || agent.getCurrentSrc() == agent.getPokemonEdge().getDest()) {
                 Game_Algo.setFinalDestAndRoute(scenario, agent.getCurrentSrc(), agent);
-                dest = Game_Algo.nextNode(scenario, agent.getCurrentSrc(), agent.getId());
-                game.chooseNextEdge(agent.getId(), dest);
 
-            } else if (agent.getCurrentDest() == -1) {
-                dest = Game_Algo.nextNode(scenario, agent.getCurrentSrc(), agent.getId());
+            }
+
+
+            if (agent.getCurrentDest() == -1) {
+                dest = Game_Algo.nextNode(scenario, agent);
                 game.chooseNextEdge(agent.getId(), dest);
             }
 
@@ -62,16 +55,30 @@ public class GameEntryPoint implements Runnable {
         }
 
     }
-
+//            if (agent.getCurrentSrc() == agent.getPokemonEdgeSrc()) {
+//                dest = agent.getPokemonEdgeDest();
+//                game.chooseNextEdge(agent.getId(), dest);
+//            } else if (agent.getCurrentSrc() == agent.getPokemonEdgeDest() || agent.getPokemonEdgeDest() == -1) {
+//                //set final dest and route to close pokemon
+//                if (agent.getPokemonEdgeDest() != -1) {
+//                    agent.getPokemonEdge().setTag(0);
+//
+//                }
+//                Game_Algo.setFinalDestAndRoute(scenario, agent.getCurrentSrc(), agent);
+//                dest = Game_Algo.nextNode(scenario, agent.getCurrentSrc(), agent.getId());
+//                game.chooseNextEdge(agent.getId(), dest);
+//
+//            } else if (agent.getCurrentDest() == -1) {
+//                dest = Game_Algo.nextNode(scenario, agent.getCurrentSrc(), agent.getId());
+//                game.chooseNextEdge(agent.getId(), dest);
+//            }
 
     private static void moveRobots(game_service game) throws JSONException {
 
         String moveJson = game.move();
 
-        String pokemonsJson = game.getPokemons();
-
         scenario.updateAgentsAfterMove(moveJson);
-        scenario.updatePokemonsAfterMove(pokemonsJson);
+        scenario.updatePokemonsAfterMove(scenario.game.getPokemons());
 
         setGamesNextAgentsDestination(game);
 
@@ -83,13 +90,15 @@ public class GameEntryPoint implements Runnable {
     public void run() {
 
         _win.show();
-        boolean start = true;
         Thread startGame = new Thread(() -> {
             scenario.game.startGame();
             int count = 0;
             while (scenario.game.isRunning()) {
+
                 try {
-                    moveRobots(scenario.game);
+                    if (count % 2 == 0) {
+                        moveRobots(scenario.game);
+                    }
                     _win.repaint();
                     count++;
                     Thread.sleep(DT);

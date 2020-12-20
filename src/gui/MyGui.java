@@ -1,16 +1,6 @@
-package gameClient;
+package gui;
 
-import api.directed_weighted_graph;
-import api.edge_data;
-import api.geo_location;
-import api.node_data;
-
-import gameClient.util.Point3D;
-import gameClient.util.Range;
-import gameClient.util.Range2D;
-import help.Agent;
-import help.Pokemon;
-import help.Scenario;
+import gameClient.Scenario;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +17,7 @@ public class MyGui extends JFrame {
         panel = new myPanel(scenario);
         this.add(panel, BorderLayout.CENTER);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // EDIT
+        this.setResizable(true);
         this.setVisible(true);
     }
 

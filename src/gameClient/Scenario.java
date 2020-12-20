@@ -1,4 +1,4 @@
-package help;
+package gameClient;
 
 import java.io.*;
 import java.util.ArrayList;
