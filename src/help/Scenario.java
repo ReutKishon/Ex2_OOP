@@ -23,6 +23,7 @@ public class Scenario {
     public HashMap<Integer, Agent> agents;
     public ArrayList<Pokemon> pokemonsList = new ArrayList<Pokemon>();
 
+
 //    public static final int ID =206226706;
 
     /**
@@ -63,6 +64,7 @@ public class Scenario {
         try {
             line = new JSONObject(info);
             JSONObject gameServerObject = line.getJSONObject("GameServer");
+
             int agentsNum = gameServerObject.getInt("agents");
             Game_Algo.addAgentNearPokemon(agentsNum, pokemonsList, game, graph);
         } catch (
@@ -118,6 +120,24 @@ public class Scenario {
 
     }
 
+    public String gameOverString(String s) {
+        String res = "";
+        JSONObject line;
+        try {
+            line = new JSONObject(s);
+            JSONObject gameServerObject = line.getJSONObject("GameServer");
+
+            String line1 = " grade: " + gameServerObject.getInt("grade") + "\n";
+
+            String line2 = " moves: " + gameServerObject.getInt("moves");
+            res = line1 + "\n" + line2;
+        } catch (
+                JSONException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
 
     public HashMap<Integer, Agent> getAgents() {
         return agents;
@@ -130,4 +150,6 @@ public class Scenario {
     public ArrayList<Pokemon> getPokemonsList() {
         return pokemonsList;
     }
+
+
 }
