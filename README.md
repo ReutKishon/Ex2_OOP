@@ -1,16 +1,8 @@
 # Ex2_OOP
 
+The main topic is developing logic for a game where a group of robots needs to perform movement on directed graph. Our game represented by JFrame.
 
-OOP_Ex3
-welcome to our README about the game: "The Maze Of Waze"!
-
-This Object oriented programming task was written by:
-
-Shahar Niknazar - 316416668
-Or Gamliel - 208202663
-The main topic is developing logic for a game where a group of robots needs to perform movement on directed graph. Our game represented by StdDraw.
-
-Game rules: The robots earn points while collecting a prize. Each prize have different score. The direction of the robot's movement is injective.
+Game rules: The agents earn points while collecting a pokemons. Each pokemon hass different score.
 
 This project is made up of several classes:
 Pokemon - This class represents the Pokemon that the robot is supposed to collect during the game. 
