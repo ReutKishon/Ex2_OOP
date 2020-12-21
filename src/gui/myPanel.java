@@ -84,7 +84,7 @@ public class myPanel extends JPanel {
 
                     BufferedImage image = null;
                     try {
-                        image = ImageIO.read(new File("pokemon.png"));
+                        image = ImageIO.read(new File("doc/pokemon.png"));
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
@@ -107,7 +107,7 @@ public class myPanel extends JPanel {
             if (c != null) {
                 BufferedImage image = null;
                 try {
-                    image = ImageIO.read(new File("agent.png"));
+                    image = ImageIO.read(new File("doc/agent.png"));
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }

@@ -179,19 +179,7 @@ public class Game_Algo {
 
     }
 
-//    /**
-//     * The function sets the agent's route and pokemon to null and an empty path.
-//     *
-//     * @param scenario scenario
-//     * @param id       agent's id
-//     */
-//    public static void setAnotherAgentDest(Scenario scenario, int id) {
-//
-//        scenario.agents.get(id).setCurr_pokemon(null);
-//        scenario.agents.get(id).setRoute(new ArrayList<>());
-//
-//
-//    }
+
 
 }
 

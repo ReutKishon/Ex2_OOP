@@ -40,7 +40,7 @@ public class GameEntryPoint implements Runnable {
      * Also try to set a "pokemon target" to each agent
      *
      * @param game game
-     * @throws JSONException
+     * @throws JSONException exception
      */
     private static void setGamesNextAgentsDestination(game_service game) throws JSONException {
         int dest;
@@ -70,33 +70,6 @@ public class GameEntryPoint implements Runnable {
 
     }
 
-    /**
-     * This function updates the "agent's pokemon" the distance left to it
-     *
-     * @param agent current agent
-     * @param dest  the next node the agent moves to
-     */
-    //Every move we update the distance of the pokemon
-    public static void updatePokemonMinDist(Agent agent, int dest) {
-
-        double pokemonCurrMinDist = agent.getCurr_pokemon().getMin_dist();
-        edge_data edge = scenario.graph.getEdge(agent.getCurrentSrc(), dest);
-        if (edge != null) {
-            double EdgeWeight = edge.getWeight();
-            agent.getCurr_pokemon().setMin_dist(pokemonCurrMinDist - EdgeWeight);
-        }
-    }
-
-    /**
-     * This function sets all the edges tag
-     */
-    public static void setPokemonEdgesTags() {
-        for (Pokemon pokemon : scenario.getPokemonsList()) {
-            if (pokemon.getEdge().getTag() == -1) {
-                pokemon.getEdge().setTag(0);
-            }
-        }
-    }
 
 
     /**
@@ -104,7 +77,7 @@ public class GameEntryPoint implements Runnable {
      * Also updates the agents and pokemons position
      *
      * @param game game
-     * @throws JSONException
+     * @throws JSONException exception
      */
     private static void moveRobots(game_service game) throws JSONException {
 
