@@ -1,0 +1,72 @@
+package tests;
+
+import gameClient.Scenario;
+import org.json.JSONException;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class Game_AlgoTest {
+
+    @Test
+    void addAgentNearPokemon1() {
+        Scenario s = null;
+        try {
+            s = new Scenario(0);
+            assertEquals(s.getPokemonsList().get(0).getEdge().getSrc(), s.getAgents().get(0).getCurrentSrc());
+
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    void addAgentNearPokemon2() {
+
+        Scenario s1 = null;
+        try {
+            s1 = new Scenario(1);
+            assertEquals(9, s1.getAgents().get(0).getCurrentSrc());
+
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void addAgentNearPokemon3() {
+
+        Scenario s2 = null;
+        try {
+            s2 = new Scenario(8);
+            assertEquals(26, s2.getAgents().get(0).getCurrentSrc());
+
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    void getPokemonEdgeByJson() {
+    }
+
+    @Test
+    void getPokemonEdge() {
+    }
+
+    @Test
+    void nextNode() {
+    }
+
+    @Test
+    void setFinalDestAndRoute() {
+    }
+
+    @Test
+    void setAnotherAgentDest() {
+    }
+}

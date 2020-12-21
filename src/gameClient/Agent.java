@@ -18,13 +18,10 @@ public class Agent {
     private int id;
     private int currentSrc;
     private int currentDest;
-    private node_data curr_node;
-//    private directed_weighted_graph _gg;
     private Pokemon curr_pokemon;
 
     List<node_data> route;
     private Point3D pos;
-    private edge_data pokemonEdge;
     double value;
     double speed;
 
@@ -111,15 +108,6 @@ public class Agent {
         this.route = route;
     }
 
-
-
-    public edge_data getPokemonEdge() {
-        return pokemonEdge;
-    }
-
-    public void setPokemonEdge(edge_data pokemonEdge) {
-        this.pokemonEdge = pokemonEdge;
-    }
 
     public Pokemon getCurr_pokemon() {
         return curr_pokemon;

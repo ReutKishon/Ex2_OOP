@@ -34,10 +34,6 @@ class DWGraph_DSTest {
         assertEquals(1, edge.getWeight());
     }
 
-    @Test
-    void addNode() {
-
-    }
 
     @Test
     void connect() {
@@ -122,6 +118,8 @@ class DWGraph_DSTest {
         assertEquals(12, graph.getMC());
         graph.removeNode(2);
         assertEquals(15, graph.getMC());
+        graph.removeNode(2);
+
 
 
     }

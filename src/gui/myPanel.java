@@ -46,11 +46,12 @@ public class myPanel extends JPanel {
         drawAgants(g);
         Font font = new Font("Verdana", Font.BOLD, 20);
         g.setFont(font);
+        g.setColor(Color.blue);
         String time = "Time till game Over: " + scenario.game.timeToEnd() / 1000 + "";
         g.drawString(time, 500, 50);
 
-            String end = scenario.gameOverString(scenario.game.toString());
-            g.drawString(end, 500, 75);
+        String end = scenario.gameOverString(scenario.game.toString());
+        g.drawString(end, 500, 75);
 
 
     }
@@ -132,7 +133,10 @@ public class myPanel extends JPanel {
         geo_location s0 = this._w2f.world2frame(s);
         geo_location d0 = this._w2f.world2frame(d);
         g.drawLine((int) s0.x(), (int) s0.y(), (int) d0.x(), (int) d0.y());
-        //	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
+//        Font font = new Font("Verdana", Font.BOLD, 10);
+//        g.setFont(font);
+//        g.setColor(Color.black);
+//        g.drawString("" + e.getWeight(), (int) s0.x(), (int) d0.y());
     }
 
 

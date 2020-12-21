@@ -3,14 +3,14 @@ package api;
 public class Edge implements edge_data {
     private final int src;
     private final int dest;
-    private final double weight;
+    private final double w;
     private transient String info;
     private transient int tag;
 
     public Edge(int src, int dest, double weight) {
         this.src = src;
         this.dest = dest;
-        this.weight = weight;
+        this.w = weight;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class Edge implements edge_data {
 
     @Override
     public double getWeight() {
-        return weight;
+        return w;
     }
 
     @Override

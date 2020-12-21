@@ -38,6 +38,7 @@ public class Pokemon {
             e.printStackTrace();
         }
         this.setMin_dist(Double.MAX_VALUE);
+        this.setMin_agent(-1);
     }
 
 

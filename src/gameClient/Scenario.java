@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 /**
  * The class builds the graph to start the game
- * places the The fruits and places the robot near to the fruit
+ * places the The pokemons and places the agents near to the pokemon
  */
 public class Scenario {
     public directed_weighted_graph graph;
@@ -24,27 +24,29 @@ public class Scenario {
     public ArrayList<Pokemon> pokemonsList = new ArrayList<Pokemon>();
 
 
-//    public static final int ID =206226706;
+    public static final int ID = 206966517;
 
     /**
-     * Init from json info about the graph, fruit and robot.
-     * places insert the robots and fruits to list.
+     * Init from json info about the graph, pokemon and agent.
+     * insert the agents and pokemons to list.
      *
      * @param scenario_num
+     * @throws JSONException
+     * @throws IOException
      */
 
     public Scenario(int scenario_num) throws JSONException, IOException {
-//        Game_Server.login(ID);
         this.game = Game_Server_Ex2.getServer(scenario_num);
+        game.login(ID);
         String graphJson = game.getGraph();
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("graphJson.txt"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("graph.json"));
         writer.write(graphJson);
         writer.close();
 
 
         graph_algo = new DWGraph_Algo();
-        graph_algo.load("graphJson.txt");
+        graph_algo.load("graph.json");
         graph = graph_algo.getGraph();
         String info = game.toString();
 
@@ -83,6 +85,11 @@ public class Scenario {
 
     }
 
+    /**
+     * update the pokemons after move
+     *
+     * @param pokemonsJson Json string
+     */
     public void updatePokemonsAfterMove(String pokemonsJson) {
         ArrayList<Pokemon> ans = new ArrayList<>();
         try {
@@ -99,6 +106,12 @@ public class Scenario {
         this.pokemonsList = ans;
     }
 
+    /**
+     * update the agents after move
+     *
+     * @param s Json string
+     * @throws JSONException
+     */
     public void updateAgentsAfterMove(String s) throws JSONException {
         JSONObject agentsInfo = new JSONObject(s);
         JSONArray agentsArray = agentsInfo.getJSONArray("Agents");
@@ -120,6 +133,12 @@ public class Scenario {
 
     }
 
+    /**
+     * return a string about the info of the game for gui
+     *
+     * @param s game Json string
+     * @return res
+     */
     public String gameOverString(String s) {
         String res = "";
         JSONObject line;
@@ -127,10 +146,13 @@ public class Scenario {
             line = new JSONObject(s);
             JSONObject gameServerObject = line.getJSONObject("GameServer");
 
-            String line1 = " grade: " + gameServerObject.getInt("grade") + "\n";
+            String line1 = " Grade: " + gameServerObject.getInt("grade");
 
-            String line2 = " moves: " + gameServerObject.getInt("moves");
-            res = line1 + "\n" + line2;
+            String line2 = " Moves: " + gameServerObject.getInt("moves");
+
+            String line3 = " Level: " + gameServerObject.getInt("game_level");
+
+            res = line1 + " ," + line2 + " ," + line3;
         } catch (
                 JSONException e) {
             e.printStackTrace();

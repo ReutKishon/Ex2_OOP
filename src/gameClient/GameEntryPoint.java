@@ -1,5 +1,6 @@
 package gameClient;
 
+import api.edge_data;
 import api.game_service;
 import gui.MyGui;
 import org.json.JSONException;
@@ -18,9 +19,8 @@ public class GameEntryPoint implements Runnable {
     /**
      * This function gets the scenario number.
      * The function uses the number scenario which places the Agents and Pokemons on the graph and builds it.
-     * The function calculates the shortest path between the Agent and the pokemon.
      *
-     * @param scenario_num
+     * @param scenario_num scenario number
      */
     public GameEntryPoint(int scenario_num) {
 
@@ -35,49 +35,83 @@ public class GameEntryPoint implements Runnable {
 
     }
 
+    /**
+     * This function set the next destination of each agent
+     * Also try to set a "pokemon target" to each agent
+     *
+     * @param game game
+     * @throws JSONException
+     */
     private static void setGamesNextAgentsDestination(game_service game) throws JSONException {
         int dest;
         for (Agent agent : scenario.getAgents().values()) {
 
-            // agent doest not have pokemon destination
-            if (agent.getCurr_pokemon() == null || agent.getCurrentSrc() == agent.getPokemonEdge().getDest()) {
+            // agent doest not have pokemon destination or it reached to his destination
+            if (agent.getCurr_pokemon() == null || agent.getCurrentSrc() == agent.getCurr_pokemon().getEdge().getDest()) {
+
+                if (agent.getCurr_pokemon() != null && agent.getCurrentSrc() == agent.getCurr_pokemon().getEdge().getDest()) {
+                    agent.getCurr_pokemon().getEdge().setTag(0);
+                }
+
                 Game_Algo.setFinalDestAndRoute(scenario, agent.getCurrentSrc(), agent);
 
             }
 
 
             if (agent.getCurrentDest() == -1) {
-                dest = Game_Algo.nextNode(scenario, agent);
+                dest = Game_Algo.nextNode(agent);
                 game.chooseNextEdge(agent.getId(), dest);
+
+
             }
 
 
         }
 
     }
-//            if (agent.getCurrentSrc() == agent.getPokemonEdgeSrc()) {
-//                dest = agent.getPokemonEdgeDest();
-//                game.chooseNextEdge(agent.getId(), dest);
-//            } else if (agent.getCurrentSrc() == agent.getPokemonEdgeDest() || agent.getPokemonEdgeDest() == -1) {
-//                //set final dest and route to close pokemon
-//                if (agent.getPokemonEdgeDest() != -1) {
-//                    agent.getPokemonEdge().setTag(0);
-//
-//                }
-//                Game_Algo.setFinalDestAndRoute(scenario, agent.getCurrentSrc(), agent);
-//                dest = Game_Algo.nextNode(scenario, agent.getCurrentSrc(), agent.getId());
-//                game.chooseNextEdge(agent.getId(), dest);
-//
-//            } else if (agent.getCurrentDest() == -1) {
-//                dest = Game_Algo.nextNode(scenario, agent.getCurrentSrc(), agent.getId());
-//                game.chooseNextEdge(agent.getId(), dest);
-//            }
 
+    /**
+     * This function updates the "agent's pokemon" the distance left to it
+     *
+     * @param agent current agent
+     * @param dest  the next node the agent moves to
+     */
+    //Every move we update the distance of the pokemon
+    public static void updatePokemonMinDist(Agent agent, int dest) {
+
+        double pokemonCurrMinDist = agent.getCurr_pokemon().getMin_dist();
+        edge_data edge = scenario.graph.getEdge(agent.getCurrentSrc(), dest);
+        if (edge != null) {
+            double EdgeWeight = edge.getWeight();
+            agent.getCurr_pokemon().setMin_dist(pokemonCurrMinDist - EdgeWeight);
+        }
+    }
+
+    /**
+     * This function sets all the edges tag
+     */
+    public static void setPokemonEdgesTags() {
+        for (Pokemon pokemon : scenario.getPokemonsList()) {
+            if (pokemon.getEdge().getTag() == -1) {
+                pokemon.getEdge().setTag(0);
+            }
+        }
+    }
+
+
+    /**
+     * This function moves the agents and update the next destination of each agent
+     * Also updates the agents and pokemons position
+     *
+     * @param game game
+     * @throws JSONException
+     */
     private static void moveRobots(game_service game) throws JSONException {
 
         String moveJson = game.move();
-
-        scenario.updateAgentsAfterMove(moveJson);
+        if (moveJson != null) {
+            scenario.updateAgentsAfterMove(moveJson);
+        }
         scenario.updatePokemonsAfterMove(scenario.game.getPokemons());
 
         setGamesNextAgentsDestination(game);

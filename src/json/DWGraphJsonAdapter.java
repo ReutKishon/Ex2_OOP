@@ -65,8 +65,6 @@ public class DWGraphJsonAdapter implements JsonSerializer<DWGraph_DS>, JsonDeser
         }
 
         for (edge_data edge : edges) {
-//            graphDw.addNode(new Node(edge.getSrc(), 0, null, 0, null));
-//            graphDw.addNode(new Node(edge.getDest(), 0, null, 0, null));
             graphDw.connect(edge.getSrc(), edge.getDest(), edge.getWeight());
         }
 

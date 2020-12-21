@@ -1,8 +1,5 @@
 package api;
 
-import gameClient.util.Point3D;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,6 +39,9 @@ public class DWGraph_DS implements directed_weighted_graph {
 
     @Override
     public edge_data getEdge(int src, int dest) {
+        if (getNode(src) == null || getNode(dest) == null) {
+            return null;
+        }
         if (!outEdges.containsKey(src)) return null;
         if (!outEdges.get(src).containsKey(dest)) return null; // O(1)
         return outEdges.get(src).get(dest);
@@ -186,6 +186,8 @@ public class DWGraph_DS implements directed_weighted_graph {
                 if (anotherGraph.getEdge(n.getKey(), edge.getDest()) == null) {
                     return false;
                 }
+                if (anotherGraph.getEdge(n.getKey(), edge.getDest()).getWeight() != this.getEdge(n.getKey(), edge.getDest()).getWeight())
+                    return false;
             }
 
 

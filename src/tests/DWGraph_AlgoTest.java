@@ -164,13 +164,10 @@ class DWGraph_AlgoTest {
         dw_graph_algorithms ag1 = new DWGraph_Algo();
         ag1.load("file.json");
         assertEquals(g0, ag1.getGraph());
-//        g0.removeNode(0);
-//        assertNotEquals(g0, ag1.getGraph());
-//        ga.save("file.json");
+        g0.removeNode(0);
+        assertNotEquals(g0, ag1.getGraph());
 
     }
 
-    @Test
-    void load() {
-    }
+
 }
