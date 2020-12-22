@@ -52,16 +52,13 @@ public class Window implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button) {
+            String inputId = textFieldId.getText();
+            String inputLevel = textFieldScenario.getText();
+
+            id = Integer.parseInt(inputId);
+            level = Integer.parseInt(inputLevel);
             GameEntryPoint gameEntryPoint = new GameEntryPoint(level, id);
             gameEntryPoint.run();
-
-        } else if (e.getSource() == textFieldId) {
-            String inputId = textFieldId.getText();
-            this.id = Integer.parseInt(inputId);
-        } else if (e.getSource() == textFieldScenario) {
-            String inputLevel = textFieldScenario.getText();
-            level = Integer.parseInt(inputLevel);
-
         }
     }
 }
