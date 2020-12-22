@@ -1,25 +1,21 @@
 package gameClient;
-
-
-
-import org.json.JSONException;
-
+import gui.Window;
 
 
 public class Ex2 {
 
+    private static int playerID;
+    private static int num_level;
 
-    public static void main(String[] a) throws JSONException {
-        var gameEntryPoint = new GameEntryPoint(23);
 
+    public static void main(String[] a) {
 
-        gameEntryPoint.run();
+        Window window = new Window();
+    }
 
 
 
     }
-
-}
 
 
 

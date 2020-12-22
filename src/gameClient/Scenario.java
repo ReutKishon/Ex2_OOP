@@ -24,7 +24,7 @@ public class Scenario {
     public ArrayList<Pokemon> pokemonsList = new ArrayList<Pokemon>();
 
 
-    public static final int ID = 206966517;
+    public int ID;
 
     /**
      * Init from json info about the graph, pokemon and agent.
@@ -35,7 +35,8 @@ public class Scenario {
      * @throws IOException
      */
 
-    public Scenario(int scenario_num) throws JSONException, IOException {
+    public Scenario(int scenario_num, int id) throws JSONException, IOException {
+        this.ID = id;
         this.game = Game_Server_Ex2.getServer(scenario_num);
         game.login(ID);
         String graphJson = game.getGraph();

@@ -22,10 +22,10 @@ public class GameEntryPoint implements Runnable {
      *
      * @param scenario_num scenario number
      */
-    public GameEntryPoint(int scenario_num) {
+    public GameEntryPoint(int scenario_num , int id) {
 
         try {
-            scenario = new Scenario(scenario_num);
+            scenario = new Scenario(scenario_num , id);
             _win = new MyGui(scenario);
             _win.setSize(1000, 700);
         } catch (JSONException | IOException e) {
